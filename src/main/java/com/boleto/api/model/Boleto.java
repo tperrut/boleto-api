@@ -1,0 +1,61 @@
+package com.boleto.api.model;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+@SuppressWarnings("serial")
+@Entity
+@Table(name = "BOLETO")
+public class Boleto extends AbstractEntity{
+	
+	@Column(nullable = false)
+	private BigDecimal total_in_cents;
+	
+	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
+	@Column(name= "data_entrada", nullable = false, columnDefinition = "DATE")
+	private LocalDate dataEntrada;
+	
+	@Column(nullable = false)
+	private String customer;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private EnumStatus status;
+	
+	public LocalDate getDataEntrada() {
+		return dataEntrada;
+	}
+	public void setDataEntrada(LocalDate dataEntrada) {
+		this.dataEntrada = dataEntrada;
+	}
+	public BigDecimal getTotal_in_cents() {
+		return total_in_cents;
+	}
+	public void setTotal_in_cents(BigDecimal total_in_cents) {
+		this.total_in_cents = total_in_cents;
+	}
+	public String getCustomer() {
+		return customer;
+	}
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+	public EnumStatus getStatus() {
+		return status;
+	}
+	public void setStatus(EnumStatus status) {
+		this.status = status;
+	}
+	
+	
+	
+}
