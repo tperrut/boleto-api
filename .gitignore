@@ -48,8 +48,9 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
+/.mvn/
+/.settings/
 
 
 # End of https://www.gitignore.io/api/java,maven,java-web,code-java
-target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
-target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
+
