@@ -51,3 +51,5 @@ target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
 
 
 # End of https://www.gitignore.io/api/java,maven,java-web,code-java
+target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
+target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
