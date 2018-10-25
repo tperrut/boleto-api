@@ -10,8 +10,6 @@ public interface BoletoService {
 	
 	Boleto salvar(Boleto Boleto);
 
-	void editar(Boleto Boleto);
-
 	void excluir(Long id);
 
 	Optional<Boleto> buscarPorId(String id);

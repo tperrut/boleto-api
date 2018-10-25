@@ -22,11 +22,6 @@ public class BoletoServiceImpl implements BoletoService {
 	}
 
 	@Override
-	public void editar(Boleto Boleto) {
-		//dao.update;
-	}
-
-	@Override
 	public void excluir(Long id) {
 		// TODO Auto-generated method stub
 		
