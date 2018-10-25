@@ -12,8 +12,8 @@ import org.hibernate.annotations.GenericGenerator;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
-	@Id @GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Id @GeneratedValue(generator="uuid2")
+	@GenericGenerator(name="uuid2", strategy = "uuid2")
 	private String id;
 
 	public String getId() {
