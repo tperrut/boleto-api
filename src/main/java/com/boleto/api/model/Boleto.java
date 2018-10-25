@@ -21,8 +21,13 @@ public class Boleto extends AbstractEntity{
 	private BigDecimal total_in_cents;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
-	@Column(name= "data_entrada", nullable = false, columnDefinition = "DATE")
-	private LocalDate dataEntrada;
+	@Column(name= "data_vencimento", nullable = false, columnDefinition = "DATE")
+	private LocalDate dataVencimento;
+	
+	
+	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
+	@Column(name= "data_pagamento", columnDefinition = "DATE")
+	private LocalDate dataPagamento;
 	
 	@Column(nullable = false)
 	private String customer;
@@ -31,12 +36,6 @@ public class Boleto extends AbstractEntity{
 	@Enumerated(EnumType.STRING)
 	private EnumStatus status;
 	
-	public LocalDate getDataEntrada() {
-		return dataEntrada;
-	}
-	public void setDataEntrada(LocalDate dataEntrada) {
-		this.dataEntrada = dataEntrada;
-	}
 	public BigDecimal getTotal_in_cents() {
 		return total_in_cents;
 	}
@@ -55,7 +54,18 @@ public class Boleto extends AbstractEntity{
 	public void setStatus(EnumStatus status) {
 		this.status = status;
 	}
+	public LocalDate getDataPagamento() {
+		return dataPagamento;
+	}
+	public void setDataPagamento(LocalDate dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
 	
-	
+	public LocalDate getDataVencimento() {
+		return dataVencimento;
+	}
+	public void setDataVencimento(LocalDate dataVencimento) {
+		this.dataVencimento = dataVencimento;
+	}
 	
 }
