@@ -34,7 +34,7 @@ public class BoletoController {
 	}
 	 
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> criarrBoleto(@RequestBody Boleto ticket){ 
+	public ResponseEntity<Object> criarBoleto(@RequestBody Boleto ticket){ 
 		Boleto salvo = null;
 		//TODO tratar erro corpo vazio status 400
 		ticket.setStatus(EnumStatus.PENDING);
