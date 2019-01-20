@@ -42,7 +42,7 @@ public class BoletoController {
 			salvo = service.salvar(ticket);
 		} catch(DataIntegrityViolationException ex){
 			ex.printStackTrace();
-			return new ResponseEntity("Erro ao Salvar: A field of the provided bolet-api was null or with invalid values ", HttpStatus.UNPROCESSABLE_ENTITY) ;
+			return new ResponseEntity("Erro ao Salvar: A field of the provided boleto-api was null or with invalid values ", HttpStatus.UNPROCESSABLE_ENTITY) ;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
