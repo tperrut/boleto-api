@@ -1,6 +1,9 @@
 package com.boleto.api.web.controller;
 
+import java.util.List;
 import java.util.Optional;
+
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
+import com.boleto.api.web.error.ResourceNotFoundException;
 
 
 @RestController
@@ -30,9 +34,21 @@ public class BoletoController {
 	
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
-		return new ResponseEntity(service.buscarTodos(), HttpStatus.OK) ;
+		List<Boleto> boletos = service.buscarTodos();
+		
+		return new ResponseEntity(boletos, HttpStatus.OK) ;
 	}
-	 
+	
+	@GetMapping(path="/boleto/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> detalharBoleto(@PathVariable String id){ 
+		Optional<Boleto> boleto = service.buscarPorId(id);
+		
+		if(!boleto.isPresent())
+			throw new ResourceNotFoundException("Boleto não encontrado para o ID "+ id);
+		
+		return new ResponseEntity(boleto, HttpStatus.OK) ;
+	}
+	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody Boleto ticket){ 
 		Boleto salvo = null;
@@ -65,7 +81,7 @@ public class BoletoController {
 
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
-		if (!boletoOptional.isPresent())
+		if (!boletoOptional.isPresent())//throw new ResourceNotFoundException(HttpStatus.NO_CONTENT.name());
 			return ResponseEntity.notFound().build();
 		
 		boletoOptional.get().setDataPagamento(boleto.getDataPagamento());
