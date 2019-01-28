@@ -3,8 +3,6 @@ package com.boleto.api.web.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -79,11 +77,9 @@ public class BoletoController {
 	@PutMapping("/boleto/{id}/pagamento")
 	public ResponseEntity<Object> pagarboleto(@RequestBody Boleto boleto, @PathVariable String id) {
 
-		Optional<Boleto> boletoOptional = service.buscarPorId(id);
+		verifyIfBoletoExists(id);
 
-		if (!boletoOptional.isPresent())//throw new ResourceNotFoundException(HttpStatus.NO_CONTENT.name());
-			return ResponseEntity.notFound().build();
-		
+		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 		boletoOptional.get().setDataPagamento(boleto.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);
 		service.salvar(boletoOptional.get());
@@ -93,16 +89,19 @@ public class BoletoController {
 	
 	@DeleteMapping("/boleto/{id}")
 	public ResponseEntity<Object> cancelarBoleto(@PathVariable String id) {
+		verifyIfBoletoExists(id);
+		Optional<Boleto> boleto = service.buscarPorId(id);
+		boleto.get().setStatus(EnumStatus.CANCELED);
+		service.salvar(boleto.get());
 
+		return ResponseEntity.noContent().build();
+	}
+
+	private void verifyIfBoletoExists(String id) {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
 		if (!boletoOptional.isPresent())
-			return ResponseEntity.notFound().build();
-		
-		boletoOptional.get().setStatus(EnumStatus.CANCELED);
-		service.salvar(boletoOptional.get());
-
-		return ResponseEntity.noContent().build();
+			throw new ResourceNotFoundException(HttpStatus.NOT_FOUND.name());
 	}
 	
 }
