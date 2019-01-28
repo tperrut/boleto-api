@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -17,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 @Table(name = "BOLETO")
 public class Boleto extends AbstractEntity{
 	
+	@NotNull(message = "total_in_cents can not be null")
 	@Column(nullable = false)
 	private BigDecimal total_in_cents;
 	
