@@ -33,18 +33,17 @@ public class BoletoController {
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
 		List<Boleto> boletos = service.buscarTodos();
+		if(boletos.isEmpty())
+			new ResponseEntity(boletos, HttpStatus.NO_CONTENT) ;	
 		
 		return new ResponseEntity(boletos, HttpStatus.OK) ;
 	}
 	
 	@GetMapping(path="/boleto/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> detalharBoleto(@PathVariable String id){ 
+		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
-		
-		if(!boleto.isPresent())
-			throw new ResourceNotFoundException("Boleto não encontrado para o ID "+ id);
-		
-		return new ResponseEntity(boleto, HttpStatus.OK) ;
+		return new ResponseEntity(boleto.get(), HttpStatus.OK) ;
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -76,12 +75,12 @@ public class BoletoController {
 	 */
 	@PutMapping("/boleto/{id}/pagamento")
 	public ResponseEntity<Object> pagarboleto(@RequestBody Boleto boleto, @PathVariable String id) {
-
-		verifyIfBoletoExists(id);
+		verificarSeBoletoExiste(id);
 
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 		boletoOptional.get().setDataPagamento(boleto.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);
+
 		service.salvar(boletoOptional.get());
 
 		return ResponseEntity.noContent().build();
@@ -89,19 +88,21 @@ public class BoletoController {
 	
 	@DeleteMapping("/boleto/{id}")
 	public ResponseEntity<Object> cancelarBoleto(@PathVariable String id) {
-		verifyIfBoletoExists(id);
+		verificarSeBoletoExiste(id);
+		
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		boleto.get().setStatus(EnumStatus.CANCELED);
+		
 		service.salvar(boleto.get());
 
 		return ResponseEntity.noContent().build();
 	}
 
-	private void verifyIfBoletoExists(String id) {
+	private void verificarSeBoletoExiste(String id) {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
 		if (!boletoOptional.isPresent())
-			throw new ResourceNotFoundException(HttpStatus.NOT_FOUND.name());
+			throw new ResourceNotFoundException("Boleto não encontrado para o ID "+ id);
 	}
 	
 }
