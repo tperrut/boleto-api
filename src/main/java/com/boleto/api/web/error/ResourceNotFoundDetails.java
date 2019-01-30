@@ -1,15 +1,11 @@
 package com.boleto.api.web.error;
 
+import java.util.Date;
+
 import javax.annotation.Generated;
 
-public class ResourceNotFoundDetails {
-	private String titulo;
-	private String detalhe;
-	private int statusCode;
-	private long timestamp;
-	private String developerMessage;
+public class ResourceNotFoundDetails extends ErrorDetail{
 
-	@Generated("SparkTools")
 	private ResourceNotFoundDetails(Builder builder) {
 		this.titulo = builder.titulo;
 		this.detalhe = builder.detalhe;
@@ -36,28 +32,21 @@ public class ResourceNotFoundDetails {
 		return developerMessage;
 	}
 
-	public long getTimestamp() {
+	public Date getTimestamp() {
 		return timestamp;
 	}
 
-	/**
-	 * Creates builder to build {@link ResourceNotFoundDetails}.
-	 * @return created builder
-	 */
-	@Generated("SparkTools")
+
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	/**
-	 * Builder to build {@link ResourceNotFoundDetails}.
-	 */
-	@Generated("SparkTools")
+	
 	public static final class Builder {
 		private String titulo;
 		private String detalhe;
 		private int statusCode;
-		private long timestamp;
+		private Date timestamp;
 		private String developerMessage;
 
 		private Builder() {
@@ -78,7 +67,7 @@ public class ResourceNotFoundDetails {
 			return this;
 		}
 
-		public Builder timestamp(long timestamp) {
+		public Builder timestamp(Date timestamp) {
 			this.timestamp = timestamp;
 			return this;
 		}

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +33,7 @@ public class Boleto extends AbstractEntity{
 	private LocalDate dataPagamento;
 	
 	@Column(nullable = false)
+	@NotEmpty(message = "Custumer can not be empty")
 	private String customer;
 	
 	@Column(nullable = false)
