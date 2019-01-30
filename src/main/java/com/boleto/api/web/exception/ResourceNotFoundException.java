@@ -1,4 +1,4 @@
-package com.boleto.api.web.error;
+package com.boleto.api.web.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

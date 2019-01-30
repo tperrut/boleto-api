@@ -4,50 +4,47 @@ import java.util.Date;
 
 import javax.annotation.Generated;
 
-public class ResourceNotFoundDetails extends ErrorDetail{
+import com.boleto.api.web.error.ResourceNotFoundDetails.Builder;
 
-	private ResourceNotFoundDetails(Builder builder) {
+public class ValidationErrorDetail extends ErrorDetail{
+	private String field;
+	private String fieldMessages;
+
+	private ValidationErrorDetail(Builder builder) {
 		this.titulo = builder.titulo;
 		this.detalhe = builder.detalhe;
 		this.statusCode = builder.statusCode;
 		this.timestamp = builder.timestamp;
 		this.developerMessage = builder.developerMessage;
+		this.field = builder.field;
+		this.fieldMessages = builder.fieldMessages;
 	}
 	
-	public ResourceNotFoundDetails() {
-		// TODO Auto-generated constructor stub
+	public String getField() {
+		return field;
 	}
-
-	public String getTitulo() {
-		return titulo;
+	public void setField(String field) {
+		this.field = field;
 	}
-	public String getDetalhe() {
-		return detalhe;
+	public String getFieldMessages() {
+		return fieldMessages;
 	}
-	public int getStatusCode() {
-		return statusCode;
+	public void setFieldMessages(String fieldMessages) {
+		this.fieldMessages = fieldMessages;
 	}
-
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	
 	public static final class Builder {
 		private String titulo;
 		private String detalhe;
 		private int statusCode;
 		private Date timestamp;
 		private String developerMessage;
+		private String field;
+		private String fieldMessages;
+
 
 		private Builder() {
 		}
@@ -77,11 +74,25 @@ public class ResourceNotFoundDetails extends ErrorDetail{
 			return this;
 		}
 
-		public ResourceNotFoundDetails build() {
-			return new ResourceNotFoundDetails(this);
+		
+		public Builder field(String field) {
+			this.field = field;
+			return this;
+		}
+
+		public Builder fieldMessages(String fieldMessages) {
+			this.fieldMessages = fieldMessages;
+			return this;
+		}
+
+		public ValidationErrorDetail build() {
+			return new ValidationErrorDetail(this);
 		}
 	}
 
-	
-	
+
+		
+		
+
+			
 }

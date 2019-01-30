@@ -3,6 +3,8 @@ package com.boleto.api.web.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
-import com.boleto.api.web.error.ResourceNotFoundException;
+import com.boleto.api.web.exception.ResourceNotFoundException;
 
 
 @RestController
@@ -47,7 +49,7 @@ public class BoletoController {
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> criarBoleto(@RequestBody Boleto ticket){ 
+	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid Boleto ticket){ 
 		Boleto salvo = null;
 		//TODO tratar erro corpo vazio status 400
 		ticket.setStatus(EnumStatus.PENDING);
@@ -102,7 +104,7 @@ public class BoletoController {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
 		if (!boletoOptional.isPresent())
-			throw new ResourceNotFoundException("Boleto não encontrado para o ID "+ id);
+			throw new ResourceNotFoundException("Boleto não encontrado para o ID: "+ id);
 	}
 	
 }

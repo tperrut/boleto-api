@@ -2,46 +2,22 @@ package com.boleto.api.web.error;
 
 import java.util.Date;
 
-import javax.annotation.Generated;
+import com.boleto.api.web.error.ResourceNotFoundDetails.Builder;
 
-public class ResourceNotFoundDetails extends ErrorDetail{
+public class JsonNotReadableDetail extends ErrorDetail{
 
-	private ResourceNotFoundDetails(Builder builder) {
+	private JsonNotReadableDetail(Builder builder) {
 		this.titulo = builder.titulo;
 		this.detalhe = builder.detalhe;
 		this.statusCode = builder.statusCode;
 		this.timestamp = builder.timestamp;
 		this.developerMessage = builder.developerMessage;
 	}
-	
-	public ResourceNotFoundDetails() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-	public String getDetalhe() {
-		return detalhe;
-	}
-	public int getStatusCode() {
-		return statusCode;
-	}
-
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	
 	public static final class Builder {
 		private String titulo;
 		private String detalhe;
@@ -77,11 +53,13 @@ public class ResourceNotFoundDetails extends ErrorDetail{
 			return this;
 		}
 
-		public ResourceNotFoundDetails build() {
-			return new ResourceNotFoundDetails(this);
+		public JsonNotReadableDetail build() {
+			return new JsonNotReadableDetail(this);
 		}
 	}
 
 	
+	
+
 	
 }
