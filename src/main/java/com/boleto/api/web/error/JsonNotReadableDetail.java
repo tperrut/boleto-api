@@ -2,8 +2,6 @@ package com.boleto.api.web.error;
 
 import java.util.Date;
 
-import com.boleto.api.web.error.ResourceNotFoundDetails.Builder;
-
 public class JsonNotReadableDetail extends ErrorDetail{
 
 	private JsonNotReadableDetail(Builder builder) {
