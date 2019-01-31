@@ -23,6 +23,7 @@ import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
 import com.boleto.api.web.exception.ResourceNotFoundException;
+import com.boleto.api.web.response.ResponseApi;
 
 
 @RestController
@@ -45,7 +46,9 @@ public class BoletoController {
 	public ResponseEntity<Object> detalharBoleto(@PathVariable String id){ 
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
-		return new ResponseEntity(boleto.get(), HttpStatus.OK) ;
+		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		boletoResponse.setData(boleto.get());
+		return new ResponseEntity(boletoResponse , HttpStatus.OK) ;
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -61,8 +64,9 @@ public class BoletoController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return new ResponseEntity(salvo, HttpStatus.CREATED) ;
+		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		boletoResponse.setData(salvo);
+		return new ResponseEntity(boletoResponse, HttpStatus.CREATED) ;
 	} 
 	
 	/**
@@ -84,7 +88,8 @@ public class BoletoController {
 		boletoOptional.get().setStatus(EnumStatus.PAID);
 
 		service.salvar(boletoOptional.get());
-
+		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		boletoResponse.setData(boletoOptional.get());
 		return ResponseEntity.noContent().build();
 	}
 	

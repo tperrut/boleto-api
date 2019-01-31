@@ -3,6 +3,7 @@ package com.boleto.api.web.response;
 import java.util.List;
 
 public class ResponseApi<T> {
+	
 	private T data;
 	private List<String> erros;
 	
