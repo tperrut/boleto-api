@@ -2,10 +2,6 @@ package com.boleto.api.web.error;
 
 import java.util.Date;
 
-import javax.annotation.Generated;
-
-import com.boleto.api.web.error.ResourceNotFoundDetails.Builder;
-
 public class ValidationErrorDetail extends ErrorDetail{
 	private String field;
 	private String fieldMessages;
