@@ -33,7 +33,7 @@ public class Boleto extends AbstractEntity{
 	private LocalDate dataPagamento;
 	
 	@Column(nullable = false)
-	@NotEmpty(message = "Custumer can not be empty")
+	@NotEmpty(message = "Customer can not be empty")
 	private String customer;
 	
 	@Column(nullable = false)
