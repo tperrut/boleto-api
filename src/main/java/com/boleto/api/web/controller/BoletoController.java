@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,8 @@ public class BoletoController {
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid Boleto ticket){ 
 		Boleto salvo = null;
+		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		
 		//TODO tratar erro corpo vazio status 400
 		ticket.setStatus(EnumStatus.PENDING);
 		try {
@@ -64,7 +67,6 @@ public class BoletoController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
 		boletoResponse.setData(salvo);
 		return new ResponseEntity(boletoResponse, HttpStatus.CREATED) ;
 	} 

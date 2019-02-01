@@ -64,9 +64,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		ValidationErrorDetail jnr = ValidationErrorDetail.builder().
 				detalhe("Ver Fields").
 				developerMessage(ValidationErrorDetail.class.getName()).
-				statusCode(HttpStatus.BAD_REQUEST.value()).
+				statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
 				timestamp(new Date()).
-				titulo("Erro de validação").
+				titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 				field(fieldErro).
 				fieldMessages(fieldMsg).
 				build();
