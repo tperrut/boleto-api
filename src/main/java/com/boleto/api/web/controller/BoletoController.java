@@ -1,16 +1,15 @@
 package com.boleto.api.web.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boleto.api.dto.BoletoDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
@@ -53,22 +53,22 @@ public class BoletoController {
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid Boleto ticket){ 
-		Boleto salvo = null;
+	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
+		Boleto ticket = null;
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
 		
-		//TODO tratar erro corpo vazio status 400
+		ticket = (dto.converteBoletoDtoToBoleto(dto));
 		ticket.setStatus(EnumStatus.PENDING);
+		
 		try {
-			salvo = service.salvar(ticket);
-		} catch(DataIntegrityViolationException ex){
+			ticket = service.salvar(ticket);
+		} catch(Exception ex){
 			ex.printStackTrace();
-			return new ResponseEntity("Erro ao Salvar: A field of the provided boleto-api was null or with invalid values ", HttpStatus.UNPROCESSABLE_ENTITY) ;
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new ResponseEntity<>("Erro ao Salvar: ", HttpStatus.INTERNAL_SERVER_ERROR) ;
 		}
-		boletoResponse.setData(salvo);
-		return new ResponseEntity(boletoResponse, HttpStatus.CREATED) ;
+		
+		boletoResponse.setData(ticket);
+		return new ResponseEntity<>(boletoResponse, HttpStatus.CREATED) ;
 	} 
 	
 	/**
@@ -82,11 +82,11 @@ public class BoletoController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/boleto/{id}/pagamento")
-	public ResponseEntity<Object> pagarboleto(@RequestBody Boleto boleto, @PathVariable String id) {
+	public ResponseEntity<Object> pagarboleto(@RequestBody LocalDate dataPagamento, @PathVariable String id) {
 		verificarSeBoletoExiste(id);
 
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
-		boletoOptional.get().setDataPagamento(boleto.getDataPagamento());
+		boletoOptional.get().setDataPagamento(dataPagamento);
 		boletoOptional.get().setStatus(EnumStatus.PAID);
 
 		service.salvar(boletoOptional.get());
