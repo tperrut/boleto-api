@@ -15,12 +15,13 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import com.boleto.api.dto.BoletoDto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "BOLETO")
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 public class Boleto extends AbstractEntity{
 	
 	@Column(nullable = false)

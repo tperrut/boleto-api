@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,14 @@ public class BoletoController {
 	@Autowired
 	private BoletoService service;
 	
+	@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
 		List<Boleto> boletos = service.buscarTodos();
 		if(boletos.isEmpty())
-			new ResponseEntity(boletos, HttpStatus.NO_CONTENT) ;	
+			new ResponseEntity<>(boletos, HttpStatus.NO_CONTENT) ;	
 		
-		return new ResponseEntity(boletos, HttpStatus.OK) ;
+		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
 	}
 	
 	@GetMapping(path="/boleto/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -49,7 +51,7 @@ public class BoletoController {
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
 		boletoResponse.setData(boleto.get());
-		return new ResponseEntity(boletoResponse , HttpStatus.OK) ;
+		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
