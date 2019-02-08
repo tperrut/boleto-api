@@ -8,20 +8,23 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.boleto.api.dto.BoletoDto;
+
+import lombok.Getter;
+import lombok.Setter;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "BOLETO")
+@Getter @Setter
 public class Boleto extends AbstractEntity{
 	
-	@NotNull(message = "total_in_cents can not be null")
 	@Column(nullable = false)
-	private BigDecimal total_in_cents;
+	private BigDecimal total;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
 	@Column(name= "data_vencimento", nullable = false, columnDefinition = "DATE")
@@ -33,43 +36,20 @@ public class Boleto extends AbstractEntity{
 	private LocalDate dataPagamento;
 	
 	@Column(nullable = false)
-	@NotEmpty(message = "Customer can not be empty")
-	private String customer;
+	private String cliente;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private EnumStatus status;
 	
-	public BigDecimal getTotal_in_cents() {
-		return total_in_cents;
-	}
-	public void setTotal_in_cents(BigDecimal total_in_cents) {
-		this.total_in_cents = total_in_cents;
-	}
-	public String getCustomer() {
-		return customer;
-	}
-	public void setCustomer(String customer) {
-		this.customer = customer;
-	}
-	public EnumStatus getStatus() {
-		return status;
-	}
-	public void setStatus(EnumStatus status) {
-		this.status = status;
-	}
-	public LocalDate getDataPagamento() {
-		return dataPagamento;
-	}
-	public void setDataPagamento(LocalDate dataPagamento) {
-		this.dataPagamento = dataPagamento;
+	public Boleto(String clienteParam, LocalDate dtVencimento, BigDecimal totalParam) {
+		this.cliente = clienteParam;
+		this.dataVencimento = dtVencimento;
+		this.total= totalParam;
 	}
 	
-	public LocalDate getDataVencimento() {
-		return dataVencimento;
+	public BoletoDto converteBoletoToDto(Boleto dto) {
+		return new BoletoDto(dto.getCliente(),dto.getDataVencimento(),dto.getTotal());
 	}
-	public void setDataVencimento(LocalDate dataVencimento) {
-		this.dataVencimento = dataVencimento;
-	}
-	
+		
 }
