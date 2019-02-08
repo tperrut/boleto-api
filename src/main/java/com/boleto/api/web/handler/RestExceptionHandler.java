@@ -19,6 +19,7 @@ import com.boleto.api.web.error.JsonNotReadableDetail;
 import com.boleto.api.web.error.ResourceNotFoundDetails;
 import com.boleto.api.web.error.ValidationErrorDetail;
 import com.boleto.api.web.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -36,20 +37,45 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		
 	}
 	
+	@ExceptionHandler(InvalidFormatException.class) 
+	public ResponseEntity<?> handleReInvaliFormatException (ResourceNotFoundException e){
+		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
+		detalhe(e.getMessage()).
+		developerMessage(ResourceNotFoundException.class.getName()).
+		statusCode(HttpStatus.NOT_FOUND.value()).
+		timestamp(new Date()).
+		titulo("Formato número inválido").
+		build();
+		return new ResponseEntity<>(ex,HttpStatus.NOT_FOUND );
+		
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+		String title = "Json is invalid";
+		HttpStatus statusName = HttpStatus.UNPROCESSABLE_ENTITY;
+		int statusCode = statusName.value();
+		
+		if(ex.getMessage().contains(" not a valid representation"))
+			title = "Erro de Conversão";
+		else if(ex.getMessage().contains("Required request body is missing")) {
+			statusCode= HttpStatus.BAD_REQUEST.value();
+			statusName = HttpStatus.BAD_REQUEST;
+			title = "Corpo da Requisição vazio";
+		}
+		
 		JsonNotReadableDetail jnr = JsonNotReadableDetail.builder().
-				detalhe(ex.getMessage()).
+				detalhe(ex.getMessage().substring(0,50).concat(" ...")).
 				developerMessage(JsonNotReadableDetail.class.getName()).
-				statusCode(HttpStatus.BAD_REQUEST.value()).
+				statusCode(statusCode).
 				timestamp(new Date()).
-				titulo("Json is invalid").
+				titulo(title).
 				build();
 				 
 		
-		return new ResponseEntity<>(jnr,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(jnr,statusName);
 
 	}
 	
@@ -71,8 +97,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				fieldMessages(fieldMsg).
 				build();
 				 
+		return new ResponseEntity<>(jnr,status);
 		
-		return new ResponseEntity<>(jnr,HttpStatus.BAD_REQUEST);
 
 	}
 	
