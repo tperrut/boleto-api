@@ -15,7 +15,6 @@ public class ResourceNotFoundDetails extends ErrorDetail{
 	}
 	
 	public ResourceNotFoundDetails() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getTitulo() {
