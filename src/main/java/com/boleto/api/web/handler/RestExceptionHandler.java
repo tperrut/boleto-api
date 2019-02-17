@@ -1,5 +1,6 @@
 package com.boleto.api.web.handler;
 
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,19 +38,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		
 	}
 	
-	@ExceptionHandler(InvalidFormatException.class) 
-	public ResponseEntity<?> handleReInvaliFormatException (ResourceNotFoundException e){
-		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
-		detalhe(e.getMessage()).
-		developerMessage(ResourceNotFoundException.class.getName()).
-		statusCode(HttpStatus.NOT_FOUND.value()).
-		timestamp(new Date()).
-		titulo("Formato número inválido").
-		build();
-		return new ResponseEntity<>(ex,HttpStatus.NOT_FOUND );
-		
-	}
-	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -65,6 +53,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			statusName = HttpStatus.BAD_REQUEST;
 			title = "Corpo da Requisição vazio";
 		}
+		
+		if(ex.getCause() instanceof InvalidFormatException) {
+			title = "Formato  de  Data Inválida: default format yyyy-MM-dd";
+		}
+			
 		
 		JsonNotReadableDetail jnr = JsonNotReadableDetail.builder().
 				detalhe(ex.getMessage().substring(0,50).concat(" ...")).
