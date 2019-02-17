@@ -1,6 +1,6 @@
 package com.boleto.api.web.controller;
 
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boleto.api.dto.BoletoDto;
+import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
@@ -39,8 +40,12 @@ public class BoletoController {
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
 		List<Boleto> boletos = service.buscarTodos();
+		
+		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		boletoResponse.setData(boletos);
 		if(boletos.isEmpty())
 			new ResponseEntity<>(boletos, HttpStatus.NO_CONTENT) ;	
+		
 		
 		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
 	}
@@ -50,7 +55,7 @@ public class BoletoController {
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
-		boletoResponse.setData(boleto.get());
+		boletoResponse.setData(Arrays.asList(boleto.get()));
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 	
@@ -69,7 +74,7 @@ public class BoletoController {
 			return new ResponseEntity<>("Erro ao Salvar: ", HttpStatus.INTERNAL_SERVER_ERROR) ;
 		}
 		
-		boletoResponse.setData(ticket);
+		boletoResponse.setData(Arrays.asList(ticket));
 		return new ResponseEntity<>(boletoResponse, HttpStatus.CREATED) ;
 	} 
 	
@@ -84,16 +89,16 @@ public class BoletoController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/boleto/{id}/pagamento")
-	public ResponseEntity<Object> pagarboleto(@RequestBody LocalDate dataPagamento, @PathVariable String id) {
+	public ResponseEntity<Object> pagarboleto(@RequestBody @Valid DataDto dataPagamento, @PathVariable String id) {
 		verificarSeBoletoExiste(id);
-
+		
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
-		boletoOptional.get().setDataPagamento(dataPagamento);
+		boletoOptional.get().setDataPagamento(dataPagamento.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);
 
 		service.salvar(boletoOptional.get());
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
-		boletoResponse.setData(boletoOptional.get());
+		boletoResponse.setData(Arrays.asList(boletoOptional.get()));
 		return ResponseEntity.noContent().build();
 	}
 	
