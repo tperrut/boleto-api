@@ -1,5 +1,8 @@
 package com.boleto.api.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.boleto.api.dao.BoletoDaoImpl;
+import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.model.Boleto;
 
 @Service @Transactional(readOnly = false)
 public class BoletoServiceImpl implements BoletoService {
 	
 	@Autowired
-	private BoletoDaoImpl dao;
+	private BoletoRepository dao;
 	
 	@Override
 	public Boleto salvar(Boleto boleto) {
@@ -35,6 +38,25 @@ public class BoletoServiceImpl implements BoletoService {
 	@Override
 	public List<Boleto> buscarTodos() {
 		return dao.findAll();
+	}
+
+	@Override
+	public Boleto calcularMulta(Boleto boleto) {
+		LocalDate hoje = LocalDate.now();
+		LocalDate dataVencimento = boleto.getDataVencimento();
+		
+		if(isMenorOuIgualDezDias(hoje, dataVencimento)){
+			boleto.setTotal(boleto.getTotal().add(boleto.getTotal().multiply(new BigDecimal(0.5))));
+		}else {
+			boleto.setTotal(boleto.getTotal().add(boleto.getTotal().multiply(new BigDecimal(1))));
+		}
+				
+		return boleto;
+	}
+	
+	private Boolean isMenorOuIgualDezDias(LocalDate hoje, LocalDate dataVencimento) {
+		Period periodo = Period.between(hoje, dataVencimento);
+		return periodo.getDays() <= 10;
 	}
 
 }
