@@ -1,8 +1,10 @@
 package com.boleto.api.web.controller;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -49,13 +51,27 @@ public class BoletoController {
 		
 		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
 	}
+	/**Esse método da API deve retornar um boleto filtrado pelo id, caso o boleto estiver atrasado deve
+		ser calculado o valor da multa.
+		Regra para o cálculo da multa aplicada por dia para os boletos atrasados:
+			● Até 10 dias: Multa de 0,5% (Juros Simples)
+			● Acima de 10 dias: Multa de 1% (Juros Simples)
+	 * 
+	 * @param id
+	 * @return
+	 */
+	
 	
 	@GetMapping(path="/boleto/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> detalharBoleto(@PathVariable String id){ 
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
+		Boleto resposta = boleto.get();
+		if(boleto.get().isAtrasado()) {
+			resposta = service.calcularMulta(boleto.get());
+		}
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
-		boletoResponse.setData(Arrays.asList(boleto.get()));
+		boletoResponse.setData(Arrays.asList(resposta));
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 	
@@ -71,7 +87,10 @@ public class BoletoController {
 			ticket = service.salvar(ticket);
 		} catch(Exception ex){
 			ex.printStackTrace();
-			return new ResponseEntity<>("Erro ao Salvar: ", HttpStatus.INTERNAL_SERVER_ERROR) ;
+			Set<String> set  = new HashSet<String>();
+			set.add("Erro ao Salvar o boleto ");
+			boletoResponse.setErros(set);
+			return new ResponseEntity<>(boletoResponse, HttpStatus.INTERNAL_SERVER_ERROR) ;
 		}
 		
 		boletoResponse.setData(Arrays.asList(ticket));
