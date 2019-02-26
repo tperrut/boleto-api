@@ -1,6 +1,7 @@
 package com.boleto.api.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -44,13 +45,18 @@ public class BoletoServiceImpl implements BoletoService {
 	public Boleto calcularMulta(Boleto boleto) {
 		LocalDate hoje = LocalDate.now();
 		LocalDate dataVencimento = boleto.getDataVencimento();
+		BigDecimal multa;
 		
 		if(isMenorOuIgualDezDias(hoje, dataVencimento)){
-			boleto.setTotal(boleto.getTotal().add(boleto.getTotal().multiply(new BigDecimal(0.5))));
+			
+			multa = boleto.getTotal().multiply(new BigDecimal(0.005)).setScale(3,RoundingMode.HALF_DOWN);
+			boleto.setTotal(boleto.getTotal().add(multa).setScale(3,RoundingMode.HALF_DOWN));
 		}else {
-			boleto.setTotal(boleto.getTotal().add(boleto.getTotal().multiply(new BigDecimal(1))));
+			multa = boleto.getTotal().multiply(new BigDecimal(0.01).setScale(3,RoundingMode.HALF_DOWN));
+			boleto.setTotal(boleto.getTotal().add(multa).setScale(3,RoundingMode.HALF_DOWN));
 		}
 				
+		boleto.setMulta(multa);
 		return boleto;
 	}
 	
