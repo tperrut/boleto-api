@@ -7,5 +7,5 @@ import com.boleto.api.model.Boleto;
 
 
 @Repository
-public interface BoletoDaoImpl extends JpaRepository<Boleto,String>{
+public interface BoletoRepository extends JpaRepository<Boleto,String>{
 }
