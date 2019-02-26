@@ -27,6 +27,9 @@ public class Boleto extends AbstractEntity{
 	@Column(nullable = false)
 	private BigDecimal total;
 	
+	@Column()
+	private BigDecimal multa;
+	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
 	@Column(name= "data_vencimento", nullable = false, columnDefinition = "DATE")
 	private LocalDate dataVencimento;
@@ -52,5 +55,13 @@ public class Boleto extends AbstractEntity{
 	public BoletoDto converteBoletoToDto(Boleto dto) {
 		return new BoletoDto(dto.getCliente(),dto.getDataVencimento(),dto.getTotal());
 	}
+	
+	public Boolean isAtrasado() {
+		LocalDate hoje = LocalDate.now();
+		LocalDate dataVencimento = this.getDataVencimento();
+		return hoje.isAfter(dataVencimento);
+	}
+	
+	}
 		
-}
+		
