@@ -1,17 +1,17 @@
-# Boleto - API
 
-![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYpVXagiF_WoZPHANoBEvmPCjSYA9QWKrW-Y83nVrF9HQu33CW9w)
+
+
+![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
  
-## Description 
+# Boleto - API
 API REST para geração de boletos.
- O sitema terá os seguintes endpoints para:
-- Criar boleto```
+ O sistema terá os seguintes endpoints para:
+- Criar boleto
 - Listar boletos
 - Ver detalhes
 - Pagar um boleto
 - Cancelar um boleto
-
 
  Foi desenvolvida utilizando [Spring Boot](http://projects.spring.io/spring-boot/)   
 
