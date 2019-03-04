@@ -21,8 +21,6 @@ import com.boleto.api.service.BoletoServiceImpl;
 import com.boleto.api.web.controller.BoletoController;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 
-import sun.security.x509.CertificatePolicyMap;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BoletoApiApplicationTests {
