@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -28,7 +29,7 @@ public class Boleto extends AbstractEntity{
 	private BigDecimal total;
 	
 	@Column()
-	private BigDecimal multa;
+	private Double multa;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
 	@Column(name= "data_vencimento", nullable = false, columnDefinition = "DATE")
@@ -39,7 +40,8 @@ public class Boleto extends AbstractEntity{
 	@Column(name= "data_pagamento", columnDefinition = "DATE")
 	private LocalDate dataPagamento;
 	
-	@Column(nullable = false)
+	@NotEmpty(message = "Cliente não pode ser vazio")
+	@Column()
 	private String cliente;
 	
 	@Column(nullable = false)

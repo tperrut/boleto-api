@@ -54,8 +54,8 @@ public class BoletoController {
 	/**Esse método da API deve retornar um boleto filtrado pelo id, caso o boleto estiver atrasado deve
 		ser calculado o valor da multa.
 		Regra para o cálculo da multa aplicada por dia para os boletos atrasados:
-			● Até 10 dias: Multa de 0,5% (Juros Simples)
-			● Acima de 10 dias: Multa de 1% (Juros Simples)
+			● Até 10 dias: Multa de 5% (Juros Simples)
+			● Acima de 10 dias: Multa de 10% (Juros Simples)
 	 * 
 	 * @param id
 	 * @return

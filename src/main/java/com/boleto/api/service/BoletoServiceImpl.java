@@ -45,15 +45,15 @@ public class BoletoServiceImpl implements BoletoService {
 	public Boleto calcularMulta(Boleto boleto) {
 		LocalDate hoje = LocalDate.now();
 		LocalDate dataVencimento = boleto.getDataVencimento();
-		BigDecimal multa;
+		Double multa;
 		
 		if(isMenorOuIgualDezDias(hoje, dataVencimento)){
 			
-			multa = boleto.getTotal().multiply(new BigDecimal(0.005)).setScale(3,RoundingMode.HALF_DOWN);
-			boleto.setTotal(boleto.getTotal().add(multa).setScale(3,RoundingMode.HALF_DOWN));
+			multa = boleto.getTotal().doubleValue() * 0.05;
+			boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
 		}else {
-			multa = boleto.getTotal().multiply(new BigDecimal(0.01).setScale(3,RoundingMode.HALF_DOWN));
-			boleto.setTotal(boleto.getTotal().add(multa).setScale(3,RoundingMode.HALF_DOWN));
+			multa = boleto.getTotal().doubleValue() * 0.1;
+			boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
 		}
 				
 		boleto.setMulta(multa);
