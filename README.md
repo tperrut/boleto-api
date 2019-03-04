@@ -6,7 +6,7 @@
  
 # Boleto - API
 API REST para geração de boletos.
- O sistema terá os seguintes endpoints para:
+	O sistema terá os seguintes endpoints :
 - Criar boleto
 - Listar boletos
 - Ver detalhes
@@ -31,7 +31,11 @@ Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/
 ```shell
 mvn spring-boot:run
 ```
+## Documentation
 
+Foi utilizado a biblioteca [Swagger](http://swagger.com).
+	Url para acessar a documentação dos EndPoints da API :
+	`http://server:port/swagger-ui.html`
 
 ## Copyright
 
