@@ -133,7 +133,7 @@ public class BoletoController {
 		return ResponseEntity.noContent().build();
 	}
 
-	private void verificarSeBoletoExiste(String id) {
+	public void verificarSeBoletoExiste(String id) {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
 		if (!boletoOptional.isPresent())
