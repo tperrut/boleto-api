@@ -28,7 +28,7 @@ public class Boleto extends AbstractEntity{
 	@Column(nullable = false)
 	private BigDecimal total;
 	
-	@Column()
+	@Column
 	private Double multa;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
@@ -41,7 +41,7 @@ public class Boleto extends AbstractEntity{
 	private LocalDate dataPagamento;
 	
 	@NotEmpty(message = "Cliente não pode ser vazio")
-	@Column()
+	@Column
 	private String cliente;
 	
 	@Column(nullable = false)

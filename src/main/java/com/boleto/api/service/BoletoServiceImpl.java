@@ -43,12 +43,9 @@ public class BoletoServiceImpl implements BoletoService {
 
 	@Override
 	public Boleto calcularMulta(Boleto boleto) {
-		LocalDate hoje = LocalDate.now();
-		LocalDate dataVencimento = boleto.getDataVencimento();
 		Double multa;
 		
-		if(isMenorOuIgualDezDias(hoje, dataVencimento)){
-			
+		if(isMenorOuIgualDezDias(LocalDate.now(), boleto.getDataVencimento())){
 			multa = boleto.getTotal().doubleValue() * 0.05;
 			boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
 		}else {
