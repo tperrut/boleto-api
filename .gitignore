@@ -33,7 +33,7 @@ factoryConfiguration.json
 hs_err_pid*
 
 ### Java-Web ###
-## ignoring target file
+## ignoring target file 
 target/
 
 ### Maven ###
