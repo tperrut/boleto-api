@@ -9,7 +9,7 @@ public class HomeController {
 	
 	@GetMapping(path="/",produces=MediaType.APPLICATION_JSON_VALUE)
 	public String home() {
-		return "{\"success\":\"Seja Bem vindo ao Boleto-API\"}";
+		return "{\"success\":\"Seja Bem vindo ao Boleto-API\" , \"link_doc\":\"http://localhost:8080/swagger-ui.html\"}";
 	}
 	
 }
