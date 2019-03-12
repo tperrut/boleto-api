@@ -97,7 +97,7 @@ public class BoletoApiApplicationTests {
 	@Test
 	public void boletoNotFoundTest() {
 		thrown.expect(ResourceNotFoundException.class);
-		this.controller.verificarSeBoletoExiste("test");
+		this.controller.verificarSeBoletoExiste("boleto-non-exist");
 	}
 	
 	@Test
