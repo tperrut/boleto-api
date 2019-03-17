@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boleto.api.dto.BoletoDetalheDto;
 import com.boleto.api.dto.BoletoDto;
 import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
@@ -40,17 +42,26 @@ public class BoletoController {
 	
 	@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> listarBoletos(){ 
+	public ResponseEntity<ResponseApi<BoletoDto>> listarBoletos(){ 
 		List<Boleto> boletos = service.buscarTodos();
-		
-		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
-		boletoResponse.setData(boletos);
+		List<BoletoDto> dtos = convertListBoletoToDto(boletos);
+		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
+		boletoResponse.setData(dtos);
 		if(boletos.isEmpty())
-			new ResponseEntity<>(boletos, HttpStatus.NO_CONTENT) ;	
+			return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;	
 		
 		
-		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
+		return new ResponseEntity<>(boletoResponse, HttpStatus.OK) ;
 	}
+	
+	
+	
+	private List<BoletoDto> convertListBoletoToDto(List<Boleto> boletos) {
+		return boletos.stream().map(b -> b.converteBoletoToDto()).collect(Collectors.toList());
+	}
+
+
+
 	/**Esse método da API deve retornar um boleto filtrado pelo id, caso o boleto estiver atrasado deve
 		ser calculado o valor da multa.
 		Regra para o cálculo da multa aplicada por dia para os boletos atrasados:
@@ -63,22 +74,24 @@ public class BoletoController {
 	
 	
 	@GetMapping(path="/boleto/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> detalharBoleto(@PathVariable String id){ 
+	public ResponseEntity<Object> detalharBoleto(@PathVariable Long id){ 
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		Boleto resposta = boleto.get();
-		if(boleto.get().isAtrasado()) {
+		
+		if(!resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado() ) {
 			resposta = service.calcularMulta(boleto.get());
 		}
-		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
-		boletoResponse.setData(Arrays.asList(resposta));
+		
+		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();
+		boletoResponse.setData(Arrays.asList(resposta.converteBoletoToDetalheDto()));
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
 		Boleto ticket = null;
-		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
+		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
 		
 		ticket = (dto.converteBoletoDtoToBoleto(dto));
 		ticket.setStatus(EnumStatus.PENDING);
@@ -86,15 +99,22 @@ public class BoletoController {
 		try {
 			ticket = service.salvar(ticket);
 		} catch(Exception ex){
-			ex.printStackTrace();
-			Set<String> set  = new HashSet<String>();
-			set.add("Erro ao Salvar o boleto ");
-			boletoResponse.setErros(set);
-			return new ResponseEntity<>(boletoResponse, HttpStatus.INTERNAL_SERVER_ERROR) ;
+			//TODO throw exception
+			return internalServerError(boletoResponse, ex);
 		}
 		
-		boletoResponse.setData(Arrays.asList(ticket));
+		boletoResponse.setData(Arrays.asList(ticket.converteBoletoToDto()));
 		return new ResponseEntity<>(boletoResponse, HttpStatus.CREATED) ;
+	}
+
+
+	//TODO Tratando exception no lugar errado
+	private ResponseEntity<Object> internalServerError(ResponseApi<BoletoDto> boletoResponse, Exception ex) {
+		ex.printStackTrace();
+		Set<String> set  = new HashSet<String>();
+		set.add("Erro ao Salvar o boleto ");
+		boletoResponse.setErros(set);
+		return new ResponseEntity<>(boletoResponse, HttpStatus.INTERNAL_SERVER_ERROR) ;
 	} 
 	
 	/**
@@ -108,21 +128,26 @@ public class BoletoController {
 	 * @return 204 No Content.
 	 */
 	@PutMapping("/boleto/{id}/pagamento")
-	public ResponseEntity<Object> pagarboleto(@RequestBody @Valid DataDto dataPagamento, @PathVariable String id) {
+	public ResponseEntity<Object> pagarboleto(@RequestBody @Valid DataDto dataPagamento, @PathVariable Long id) {
 		verificarSeBoletoExiste(id);
 		
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
+		if(!boletoOptional.get().isPending()) {
+			//TODO throw BusisnessException
+		}	
+
 		boletoOptional.get().setDataPagamento(dataPagamento.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);
-
+		
 		service.salvar(boletoOptional.get());
+		
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
 		boletoResponse.setData(Arrays.asList(boletoOptional.get()));
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/boleto/{id}")
-	public ResponseEntity<Object> cancelarBoleto(@PathVariable String id) {
+	public ResponseEntity<Object> cancelarBoleto(@PathVariable Long id) {
 		verificarSeBoletoExiste(id);
 		
 		Optional<Boleto> boleto = service.buscarPorId(id);
@@ -133,7 +158,7 @@ public class BoletoController {
 		return ResponseEntity.noContent().build();
 	}
 
-	public void verificarSeBoletoExiste(String id) {
+	public void verificarSeBoletoExiste(Long id) {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
 		if (!boletoOptional.isPresent())
