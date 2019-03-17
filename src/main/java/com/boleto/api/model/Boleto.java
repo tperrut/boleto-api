@@ -69,7 +69,14 @@ public class Boleto extends AbstractEntity{
 	}
 	
 	public BoletoDetalheDto converteBoletoToDetalheDto() {
-		return BoletoDetalheDto.builder().multa(this.getMulta()).total(this.getTotal()).status(this.getStatus()).id(this.getId()).cliente(this.getCliente()).dataVencimento(this.getDataVencimento()).build();
+		return BoletoDetalheDto.builder().
+				multa(this.getMulta()).
+				total(this.getTotal()).
+				status(this.getStatus()).
+				id(this.getId()).
+				cliente(this.getCliente()).
+				dataVencimento(this.getDataVencimento()).
+				build();
 	}
 	
 	public Boolean isAtrasado() {
