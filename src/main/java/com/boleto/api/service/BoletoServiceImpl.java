@@ -9,56 +9,66 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.model.Boleto;
 
-@Service @Transactional(readOnly = false)
+@Service 
 public class BoletoServiceImpl implements BoletoService {
+	
+	private static final double ATE_10_DIAS_ATRASO = 0.05;
+	private static final double ACIMA_10_DIAS_ATRASO = 0.1;
 	
 	@Autowired
 	private BoletoRepository dao;
 	
-	@Override
+	@Override @Transactional(propagation = Propagation.REQUIRED)
 	public Boleto salvar(Boleto boleto) {
 		return dao.save(boleto);
 	}
 
-	@Override
-	public void excluir(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override 
+	public void excluir(Long id) {}
 
-	@Override
-	public Optional<Boleto> buscarPorId(String id) {
+	
+	@Override	@Transactional(readOnly = true)
+	public Optional<Boleto> buscarPorId(Long id) {
 		return dao.findById(id);
 	}
 
-	@Override
+	@Override @Transactional(readOnly = true)
 	public List<Boleto> buscarTodos() {
 		return dao.findAll();
 	}
 
-	@Override
+	@Override 
 	public Boleto calcularMulta(Boleto boleto) {
 		Double multa;
 		
-		if(isMenorOuIgualDezDias(LocalDate.now(), boleto.getDataVencimento())){
-			multa = boleto.getTotal().doubleValue() * 0.05;
-			boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
+		if(isMenorOuIgualDezDias( boleto.getDataVencimento())){
+			multa = getValorMulta(boleto,ATE_10_DIAS_ATRASO);
+			aplicarMulta(boleto, multa);
 		}else {
-			multa = boleto.getTotal().doubleValue() * 0.1;
-			boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
+			multa = getValorMulta(boleto,ACIMA_10_DIAS_ATRASO);
+			aplicarMulta(boleto, multa);
 		}
 				
 		boleto.setMulta(multa);
 		return boleto;
 	}
+
+	private Double getValorMulta(Boleto boleto,Double constante) {
+		return boleto.getTotal().doubleValue() * constante ;
+	}
+
+	private void aplicarMulta(Boleto boleto, Double multa) {
+		boleto.setTotal(boleto.getTotal().add(new BigDecimal(multa)).setScale(2,RoundingMode.HALF_DOWN));
+	}
 	
-	private Boolean isMenorOuIgualDezDias(LocalDate hoje, LocalDate dataVencimento) {
-		Period periodo = Period.between(hoje, dataVencimento);
+	private Boolean isMenorOuIgualDezDias(LocalDate dataVencimento) {
+		Period periodo = Period.between(LocalDate.now(), dataVencimento);
 		return periodo.getDays() <= 10;
 	}
 
