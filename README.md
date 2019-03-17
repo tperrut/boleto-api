@@ -10,6 +10,7 @@ API REST para geração de boletos.
 - Criar boleto
 - Listar boletos
 - Ver detalhes
+- Find By Cliente
 - Pagar um boleto
 - Cancelar um boleto
 
@@ -31,6 +32,16 @@ Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/
 ```shell
 mvn spring-boot:run
 ```
+
+## Tests 
+
+Use maven goal 'test'
+
+```shell
+mvn test
+```
+
+ 
 ## Documentation
 
 Foi utilizado a biblioteca [Swagger](http://swagger.com).
