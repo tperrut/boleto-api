@@ -97,7 +97,7 @@ public class BoletoApiApplicationTests {
 	@Test
 	public void boletoNotFoundTest() {
 		thrown.expect(ResourceNotFoundException.class);
-		this.controller.verificarSeBoletoExiste("boleto-non-exist");
+		this.controller.verificarSeBoletoExiste(1898L);
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class BoletoApiApplicationTests {
 	public void deleteBoletoTest() {
 		Boleto boleto = createBoleto(LocalDate.now().plusDays(12));
 		boleto = this.repository.save(boleto);
-		String id = boleto.getId();
+		Long id = boleto.getId();
 		this.repository.delete(boleto);
 		Optional<Boleto> retorno =  this.repository.findById(id);
 		assertThat(retorno.isPresent()).isFalse();
