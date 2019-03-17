@@ -2,8 +2,6 @@ package com.boleto.api.web.error;
 
 import java.util.Date;
 
-import javax.annotation.Generated;
-
 public class ResourceNotFoundDetails extends ErrorDetail{
 
 	private ResourceNotFoundDetails(Builder builder) {

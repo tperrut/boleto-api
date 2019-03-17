@@ -2,8 +2,6 @@ package com.boleto.api.web.error;
 
 import java.util.Date;
 
-import javax.annotation.Generated;
-
 import lombok.Getter;
 import lombok.Setter;
 @Setter @Getter
