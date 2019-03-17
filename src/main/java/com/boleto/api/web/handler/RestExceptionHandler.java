@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.boleto.api.web.error.BusinessExceptionDetail;
 import com.boleto.api.web.error.JsonNotReadableDetail;
 import com.boleto.api.web.error.ResourceNotFoundDetails;
 import com.boleto.api.web.error.ValidationErrorDetail;
+import com.boleto.api.web.exception.BusinessException;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -36,6 +38,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(ex,HttpStatus.NOT_FOUND );
 		
 	}
+	
+	@ExceptionHandler(BusinessException.class) 
+	public ResponseEntity<?> handleResourceBusinessException (BusinessException e){
+		BusinessExceptionDetail ex = BusinessExceptionDetail.builder().
+		detalhe(e.getMessage()).
+		developerMessage(BusinessException.class.getName()).
+		statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+		timestamp(new Date()).
+		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
+		build();
+		return new ResponseEntity<>(ex,HttpStatus.UNPROCESSABLE_ENTITY );
+		
+	}
+	
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
