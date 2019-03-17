@@ -23,6 +23,6 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("Swagger API")
-				.description("Documentação da API de acesso aos endpoints com Swagger").version("1.0").build();
+				.description("Documentação da API com Swagger").version("1.0").build();
 	}
 }
