@@ -1,12 +1,15 @@
 package com.boleto.api.model;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import lombok.Data;
 
@@ -15,9 +18,12 @@ import lombok.Data;
 @Data
 public abstract class AbstractEntity implements Serializable {
 
-	@Id @GeneratedValue(generator="uuid2")
-	@GenericGenerator(name="uuid2", strategy = "uuid2")
-	private String id;
-		
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	//@Type(type="uuid-binary") private UUID refId;
+	
+	
+	
 }
 
