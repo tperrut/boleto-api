@@ -7,12 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.boleto.api.dto.BoletoDetalheDto;
 import com.boleto.api.dto.BoletoDto;
 
 import lombok.Getter;
@@ -28,7 +32,7 @@ public class Boleto extends AbstractEntity{
 	@Column(nullable = false)
 	private BigDecimal total;
 	
-	@Column
+	@Transient
 	private Double multa;
 	
 	@DateTimeFormat(iso = ISO.DATE, pattern="yyyy-MM-dd")
@@ -54,14 +58,34 @@ public class Boleto extends AbstractEntity{
 		this.total= totalParam;
 	}
 	
-	public BoletoDto converteBoletoToDto(Boleto dto) {
-		return new BoletoDto(dto.getCliente(),dto.getDataVencimento(),dto.getTotal());
+	 @PrePersist
+	    public void onPrePersist() { System.out.println("Tá rolando um PrePersist");}
+	       
+	@PreUpdate
+	public void onPreUpdate() { System.out.println("Tá rolando um PreUpdate");}
+	
+	public BoletoDto converteBoletoToDto() {
+		return new BoletoDto(this.getCliente(),this.getDataVencimento(),this.getTotal());
+	}
+	
+	public BoletoDetalheDto converteBoletoToDetalheDto() {
+		return BoletoDetalheDto.builder().multa(this.getMulta()).total(this.getTotal()).status(this.getStatus()).id(this.getId()).cliente(this.getCliente()).dataVencimento(this.getDataVencimento()).build();
 	}
 	
 	public Boolean isAtrasado() {
-		LocalDate hoje = LocalDate.now();
-		LocalDate dataVencimento = this.getDataVencimento();
-		return hoje.isAfter(dataVencimento);
+		return LocalDate.now().isAfter(this.getDataVencimento());
+	}
+
+	public boolean isPaid() {
+		return this.getStatus().equals(EnumStatus.PAID);
+	}
+	
+	public boolean isPending() {
+		return this.getStatus().equals(EnumStatus.PENDING);
+	}
+	
+	public boolean isCanceled() {
+		return this.getStatus().equals(EnumStatus.CANCELED);
 	}
 	
 }
