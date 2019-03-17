@@ -20,6 +20,7 @@ import com.boleto.api.web.error.JsonNotReadableDetail;
 import com.boleto.api.web.error.ResourceNotFoundDetails;
 import com.boleto.api.web.error.ValidationErrorDetail;
 import com.boleto.api.web.exception.BusinessException;
+import com.boleto.api.web.exception.InternalServerException;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -51,6 +52,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(ex,HttpStatus.UNPROCESSABLE_ENTITY );
 		
 	}
+	@ExceptionHandler(InternalServerException.class) 
+	public ResponseEntity<?> handleResourceInternalServerException (InternalServerException e){
+		BusinessExceptionDetail ex = BusinessExceptionDetail.builder().
+		detalhe(e.getMessage()).
+		developerMessage(InternalServerException.class.getName()).
+		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
+		timestamp(new Date()).
+		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
+		build();
+		return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR) ;
+    }
+
 	
 	
 	@Override

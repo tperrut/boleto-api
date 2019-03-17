@@ -1,10 +1,8 @@
 package com.boleto.api.web.controller;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -30,6 +28,7 @@ import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
 import com.boleto.api.web.exception.BusinessException;
+import com.boleto.api.web.exception.InternalServerException;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 import com.boleto.api.web.response.ResponseApi;
 
@@ -44,13 +43,20 @@ public class BoletoController {
 	@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseApi<BoletoDto>> listarBoletos(){ 
-		List<Boleto> boletos = service.buscarTodos();
-		List<BoletoDto> dtos = convertListBoletoToDto(boletos);
-		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
-		boletoResponse.setData(dtos);
-		if(boletos.isEmpty())
-			return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;	
+
+		List<Boleto>  boletos = null;
+		ResponseApi<BoletoDto> boletoResponse;
 		
+		try {
+			boletos = service.buscarTodos();
+			List<BoletoDto> dtos = convertListBoletoToDto(boletos);
+			boletoResponse = new ResponseApi<BoletoDto>();
+			boletoResponse.setData(dtos);
+		} catch (Exception e) {
+			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!");
+		}
+		
+		if(boletos.isEmpty()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
 		
 		return new ResponseEntity<>(boletoResponse, HttpStatus.OK) ;
 	}
@@ -80,7 +86,7 @@ public class BoletoController {
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		Boleto resposta = boleto.get();
 		
-		if(!resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado() ) {
+		if(isCalculable(resposta) ) {
 			resposta = service.calcularMulta(boleto.get());
 		}
 		
@@ -91,16 +97,36 @@ public class BoletoController {
 	
 	@GetMapping(path="/boleto/cliente/{cliente}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseApi<BoletoDetalheDto>> findByName(@PathVariable String cliente){ 
-		Optional<Boleto> boleto = service.buscarPorCliente(cliente);
-		Boleto resposta = boleto.get();
-		
-		if(!resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado() ) {
-			resposta = service.calcularMulta(boleto.get());
+
+		Optional<Boleto> boleto = null;
+		Boleto resposta = null;
+		try {
+			boleto = service.buscarPorCliente(cliente);
+			resposta = boleto.get();
+			
+			if(isCalculable(resposta) ) {
+				resposta = service.calcularMulta(boleto.get());
+			}
+		} catch(Exception ex) {
+			throw new InternalServerException("Erro ao consultar boleto por nome. Contate o admin!");
 		}
-		
 		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();
 		boletoResponse.setData(Arrays.asList(resposta.converteBoletoToDetalheDto()));
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
+	}
+
+
+	/**
+	 * Regra para definir se vamos calcular o boleto:
+	 * 
+	 * Não pode ter os seguintes Status: PAID e CANCELED |
+	 * Deve estar atrasado
+	 * 
+	 * @param Boleto resposta
+	 * @return Boleto
+	 */
+	private boolean isCalculable(Boleto resposta) {
+		return !resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado();
 	}
 	
 	
@@ -110,15 +136,14 @@ public class BoletoController {
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
 		Boleto ticket = null;
 		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
-		
-		ticket = (dto.converteBoletoDtoToBoleto(dto));
-		ticket.setStatus(EnumStatus.PENDING);
-		
 		try {
+			ticket = (dto.converteBoletoDtoToBoleto(dto));
+			ticket.setStatus(EnumStatus.PENDING);
+			
 			ticket = service.salvar(ticket);
 		} catch(Exception ex){
-			//TODO throw exception
-			return internalServerError(boletoResponse, ex);
+			//TODO throw exception	return internalServerError(boletoResponse, ex);
+			throw new InternalServerException("Erro ao Salvar o boleto. Contate o admin!");
 		}
 		
 		boletoResponse.setData(Arrays.asList(ticket.converteBoletoToDto()));
@@ -126,15 +151,6 @@ public class BoletoController {
 	}
 
 
-	//TODO Tratando exception no lugar errado
-	private ResponseEntity<Object> internalServerError(ResponseApi<BoletoDto> boletoResponse, Exception ex) {
-		ex.printStackTrace();
-		Set<String> set  = new HashSet<String>();
-		set.add("Erro ao Salvar o boleto ");
-		boletoResponse.setErros(set);
-		return new ResponseEntity<>(boletoResponse, HttpStatus.INTERNAL_SERVER_ERROR) ;
-	} 
-	
 	/**
 	 *   --Pagar um boleto---
 	 *  Esse método da API deve alterar o status do boleto para PAID.
