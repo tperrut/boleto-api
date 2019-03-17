@@ -16,5 +16,7 @@ public interface BoletoService {
 	List<Boleto> buscarTodos();
 	
 	Boleto calcularMulta(Boleto Boleto);
+
+	Optional<Boleto> buscarPorCliente(String name);
 	
 }

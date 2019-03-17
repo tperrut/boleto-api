@@ -29,6 +29,7 @@ import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
+import com.boleto.api.web.exception.BusinessException;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 import com.boleto.api.web.response.ResponseApi;
 
@@ -88,6 +89,23 @@ public class BoletoController {
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 	
+	@GetMapping(path="/boleto/cliente/{cliente}",produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseApi<BoletoDetalheDto>> findByName(@PathVariable String cliente){ 
+		Optional<Boleto> boleto = service.buscarPorCliente(cliente);
+		Boleto resposta = boleto.get();
+		
+		if(!resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado() ) {
+			resposta = service.calcularMulta(boleto.get());
+		}
+		
+		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();
+		boletoResponse.setData(Arrays.asList(resposta.converteBoletoToDetalheDto()));
+		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
+	}
+	
+	
+	
+	
 	@PostMapping(path="/boleto",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
 		Boleto ticket = null;
@@ -133,8 +151,9 @@ public class BoletoController {
 		
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 		if(!boletoOptional.get().isPending()) {
-			//TODO throw BusisnessException
+			throw new BusinessException("Boleto deve estar com o status PENDING para ser pago");
 		}	
+		
 
 		boletoOptional.get().setDataPagamento(dataPagamento.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);

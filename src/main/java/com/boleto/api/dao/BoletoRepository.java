@@ -12,4 +12,6 @@ import com.boleto.api.model.Boleto;
 public interface BoletoRepository extends JpaRepository<Boleto,String>{
 
 	Optional<Boleto> findById(Long id);
+
+	Optional<Boleto> findByCliente(String nome);
 }

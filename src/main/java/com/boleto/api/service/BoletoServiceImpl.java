@@ -38,6 +38,11 @@ public class BoletoServiceImpl implements BoletoService {
 		return dao.findById(id);
 	}
 
+	@Override	@Transactional(readOnly = true)
+	public Optional<Boleto> buscarPorCliente(String nome) {
+		return dao.findByCliente(nome);
+	}
+	
 	@Override @Transactional(readOnly = true)
 	public List<Boleto> buscarTodos() {
 		return dao.findAll();
