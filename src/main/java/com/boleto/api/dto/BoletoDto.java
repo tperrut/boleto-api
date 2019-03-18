@@ -28,7 +28,7 @@ public class BoletoDto {
 		this.cliente= cli;
 	}
 
-	public Boleto converteBoletoDtoToBoleto(BoletoDto dto) {
-		return new Boleto(dto.getCliente(),dto.getDataVencimento(),dto.getTotal());
+	public Boleto converteBoletoDtoToBoleto() {
+		return new Boleto(this.getCliente(),this.getDataVencimento(),this.getTotal());
 	}
 }
