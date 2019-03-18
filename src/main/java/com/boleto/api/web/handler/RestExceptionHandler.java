@@ -16,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.boleto.api.web.error.BusinessExceptionDetail;
+import com.boleto.api.web.error.InternalServerExceptionDetail;
 import com.boleto.api.web.error.JsonNotReadableDetail;
 import com.boleto.api.web.error.ResourceNotFoundDetails;
 import com.boleto.api.web.error.ValidationErrorDetail;
@@ -54,7 +55,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	@ExceptionHandler(InternalServerException.class) 
 	public ResponseEntity<?> handleResourceInternalServerException (InternalServerException e){
-		BusinessExceptionDetail ex = BusinessExceptionDetail.builder().
+		InternalServerExceptionDetail ex = InternalServerExceptionDetail.builder().
 		detalhe(e.getMessage()).
 		developerMessage(InternalServerException.class.getName()).
 		statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).
