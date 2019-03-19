@@ -70,7 +70,7 @@ public class BoletoController {
 	}
 	
 	
-	@GetMapping(path="/boletos/paged",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/boletos/pagedAndSorted",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletosPaged(@PageableDefault(size = 3) Pageable page){ 
 		LOGGER.info("Chamada do end point - LISTAR_BOLETOS_PAGED -" );
 		ResponseApi<BoletoDto> boletoResponse;
