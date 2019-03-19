@@ -62,6 +62,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		timestamp(new Date()).
 		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
 		build();
+		e.getCause().printStackTrace();
 		return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR) ;
     }
 
@@ -96,7 +97,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				titulo(title).
 				build();
 				 
-		
+		ex.printStackTrace();
 		return new ResponseEntity<>(jnr,statusName);
 
 	}
@@ -118,7 +119,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				field(fieldErro).
 				fieldMessages(fieldMsg).
 				build();
-				 
+		ex.printStackTrace();		 
 		return new ResponseEntity<>(jnr,status);
 		
 
