@@ -3,6 +3,9 @@ package com.boleto.api.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.boleto.api.model.Boleto;
 
 public interface BoletoService {
@@ -13,10 +16,12 @@ public interface BoletoService {
 
 	Optional<Boleto> buscarPorId(Long id);
 
-	List<Boleto> buscarTodos();
+	Page<Boleto> findAll(Pageable pageable);
 	
 	Boleto calcularMulta(Boleto Boleto);
 
 	Optional<Boleto> buscarPorCliente(String name);
+
+	List<Boleto> findAll();
 	
 }

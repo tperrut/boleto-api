@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,24 +49,46 @@ public class BoletoController {
 	
 	@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResponseApi<BoletoDto>> listarBoletos(){ 
+	public ResponseEntity<Object> listarBoletos(){ 
 		LOGGER.info("Chamada do end point - LISTAR_BOLETOS -" );
-		List<Boleto>  boletos = null;
 		ResponseApi<BoletoDto> boletoResponse;
 		
+		List<Boleto>  boletos = null;
 		try {
-			boletos = service.buscarTodos();
+			boletos = service.findAll();
 			List<BoletoDto> dtos = convertListBoletoToDto(boletos);
 			boletoResponse = new ResponseApi<BoletoDto>();
 			boletoResponse.setData(dtos);
 		} catch (Exception e) {
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  FIND_BY_NAME - |");
+			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  LISTAR_BOLETOS - |");
 			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!",e);
 		}
 		
 		if(boletos.isEmpty()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
 		
-		return new ResponseEntity<>(boletoResponse, HttpStatus.OK) ;
+		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
+	}
+	
+	
+	@GetMapping(path="/boletos/paged",produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> listarBoletosPaged(@PageableDefault(size = 3) Pageable page){ 
+		LOGGER.info("Chamada do end point - LISTAR_BOLETOS_PAGED -" );
+		ResponseApi<BoletoDto> boletoResponse;
+		
+		Page<Boleto>  boletos = null;
+		try {
+			boletos = service.findAll(page);
+			//List<BoletoDto> dtos = convertListBoletoToDto(boletos);
+			boletoResponse = new ResponseApi<BoletoDto>();
+			//boletoResponse.setData(boletos);
+		} catch (Exception e) {
+			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  LISTAR_BOLETOS_PAGED - |");
+			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!",e);
+		}
+		
+		//if(boletos.isEmpty()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
+		
+		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
 	}
 	
 	
