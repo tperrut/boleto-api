@@ -6,8 +6,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,9 @@ import com.boleto.api.model.EnumStatus;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class BoletoControllerTest {
+public class BoletoEndPointTest {
+
+	public static final String CLIENTE_TESTE ="CLIENTE_TESTE";  
 	
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -36,27 +42,70 @@ public class BoletoControllerTest {
 	@MockBean
 	private BoletoRepository boletoRepository;
 	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
+	
+	
+	@Before
+	public void contextLoads() {
+		System.out.println("Porta teste: "+port);
+	}
 	
 	private Boleto createBoleto(LocalDate dataVencimento, String nome) {
 		Boleto boleto = new Boleto(nome, dataVencimento, new BigDecimal(100));
 		boleto.setStatus(EnumStatus.PENDING);
+		boleto.setId(1L);
 		return boleto;
 	}
 	
+	private Optional<Boleto> createBoletoOptional(LocalDate dataVencimento, String nome) {
+		Boleto boleto = new Boleto(nome, dataVencimento, new BigDecimal(100));
+		boleto.setStatus(EnumStatus.PENDING);
+		boletoRepository.save(boleto);
+		Optional<Boleto> opt = boletoRepository.findByCliente(CLIENTE_TESTE);
+		return opt;
+	}
+	
+		
 	@Test
 	public void listBoletosTest() {
-		System.out.println("Porta teste: "+port);
 		List<Boleto> boletos = Arrays.asList(createBoleto(LocalDate.now(), "VALE"),createBoleto(LocalDate.now(), "ICN"));
 		BDDMockito.when(boletoRepository.findAll()).thenReturn(boletos);
-		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boleto",String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos",String.class);
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
-		
-	}
-	@Test
-	public void listBoletosByNameTest() {
-		System.out.println("Porta teste: "+port);
-		
-		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boleto",String.class);
+		assertThat(response.getBody().contains("ICN")).isTrue();
 		assertThat(response.getBody().contains("VALE")).isTrue();
 	}
+	
+	@Test
+	public void findByClienteNotValidTest() {
+		Boleto boleto = createBoleto(LocalDate.now(), CLIENTE_TESTE);
+		BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
+		
+		Optional<Boleto> boletoOpt = Optional.of(boleto);
+		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
+		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/client_no_exist",String.class);
+		assertThat(response.getBody().contains("Resource Not Found")).isTrue();
+		assertThat(response.getStatusCodeValue()).isEqualTo(404);
+
+	}
+	
+	
+	@Test
+	public void findByClientValidTest() {
+		Boleto boleto = createBoleto(LocalDate.now(), CLIENTE_TESTE);
+		BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
+		
+		Optional<Boleto> boletoOpt= Optional.of(boleto);
+		System.out.println("boletoOpt "+ boletoOpt.isPresent());
+		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
+		
+		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/"+CLIENTE_TESTE,String.class);
+
+		assertThat(response.getBody().contains(CLIENTE_TESTE)).isTrue();
+		assertThat(response.getBody().contains("ICN")).isFalse();
+		assertThat(response.getStatusCodeValue()).isEqualTo(200);
+	}
+	
 }

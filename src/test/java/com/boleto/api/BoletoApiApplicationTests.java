@@ -120,19 +120,6 @@ public class BoletoApiApplicationTests {
 	}
 	
 	
-	//TODO remover esse teste e
-	//mover para a classe de testes que é responsavel por testar o controller/endpoint 
-	@Test
-	public void pagarBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(12));
-		boleto = this.repository.save(boleto);
-		boleto.setDataPagamento(LocalDate.now());
-		boleto.setStatus(EnumStatus.PAID);
-		boleto = this.repository.save(boleto);
-		assertThat(boleto.getDataPagamento()).isNotNull();
-		assertThat(boleto.getStatus()).isEqualTo(EnumStatus.PAID);
-	}
-	
 	@Test
 	public void validarBoletoAtrasadoTest() {
 		Boleto boleto = createBoleto(LocalDate.now().minusDays(20));
