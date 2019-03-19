@@ -25,6 +25,10 @@ import com.boleto.api.web.exception.ResourceNotFoundException;
 @SpringBootTest
 public class BoletoApiApplicationTests {
 
+	private static final String CLIENTE_FAIL = "VALE NADA";
+
+	public final String CLIENTE_TESTE = "VALE";
+
 	@Autowired
 	private BoletoRepository repository;
 	
@@ -37,7 +41,6 @@ public class BoletoApiApplicationTests {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
-	public final String CLIENTE_TESTE = "VALE";
 	
 	@Test
 	public void contextLoads() {
@@ -106,9 +109,9 @@ public class BoletoApiApplicationTests {
 	public void alterarBoletoTest() {
 		Boleto boleto = createBoleto(LocalDate.now().plusDays(12));
 		boleto = this.repository.save(boleto);
-		boleto.setCliente("VALE NADA");
+		boleto.setCliente(CLIENTE_FAIL);
 		boleto = this.repository.save(boleto);
-		assertThat(boleto.getCliente()).isEqualTo("VALE NADA");
+		assertThat(boleto.getCliente()).isEqualTo(CLIENTE_FAIL);
 	}
 	
 	@Test
