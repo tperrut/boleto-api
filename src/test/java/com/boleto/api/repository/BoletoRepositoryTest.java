@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.Rule;
@@ -21,12 +20,16 @@ import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 
-import ch.qos.logback.core.status.OnPrintStreamStatusListenerBase;
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class BoletoRepositoryTest {
 	
+	private static final String TESTE_PAGO = "TESTE_PAGO";
+
+	private static final String CLIENTE_NÃO_PODE_SER_VAZIO = "Cliente não pode ser vazio";
+
+	private static final String CLIENTE_TESTE = "TESTE";
+
 	@Autowired
 	private BoletoRepository repository;
 	
@@ -42,23 +45,24 @@ public class BoletoRepositoryTest {
 	
 	@Test
 	public void criarBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(12),"TESTE");
+		Boleto boleto = createBoleto(LocalDate.now().plusDays(12),CLIENTE_TESTE);
 		
-		repository.save(boleto);
-		assertThat(boleto).isNotNull();
-		assertThat(boleto.getCliente()).isEqualTo("TESTE");
-		assertThat(boleto.getStatus()).isEqualTo(EnumStatus.PENDING);
+		Boleto resposta = repository.save(boleto);
+		assertThat(resposta).isNotNull();
+		assertThat(resposta.getCliente()).isEqualTo(CLIENTE_TESTE);
+		assertThat(resposta.getStatus()).isEqualTo(EnumStatus.PENDING);
 	}
+	
 	@Test
 	public void criarComClienteIsNullThrowConstraintViolationException() {
 		thrown.expect(ConstraintViolationException.class);
-		thrown.expectMessage("Cliente não pode ser vazio");
+		thrown.expectMessage(CLIENTE_NÃO_PODE_SER_VAZIO);
 		repository.save(new Boleto());
 	}
 	
 	@Test
 	public void pagarBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(12),"TESTE");
+		Boleto boleto = createBoleto(LocalDate.now().plusDays(12),CLIENTE_TESTE);
 		
 		repository.save(boleto);
 		
@@ -68,13 +72,12 @@ public class BoletoRepositoryTest {
 			boleto = opt.get();
 		
 		boleto.setStatus(EnumStatus.PAID);
-		boleto.setCliente("TESTE_PAGO");
-		repository.save(boleto);
+		boleto.setCliente(TESTE_PAGO);
 		
-		assertThat(boleto).isNotNull();
-		assertThat(boleto.getCliente()).isEqualTo("TESTE_PAGO");
-		assertThat(boleto.getStatus()).isEqualTo(EnumStatus.PAID);
-		
+		Boleto resposta = repository.save(boleto);
+		assertThat(resposta).isNotNull();
+		assertThat(resposta.getCliente()).isEqualTo(TESTE_PAGO);
+		assertThat(resposta.getStatus()).isEqualTo(EnumStatus.PAID);
 	}
 	
 	

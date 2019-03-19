@@ -37,13 +37,15 @@ public class BoletoApiApplicationTests {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
+	public final String CLIENTE_TESTE = "VALE";
+	
 	@Test
 	public void contextLoads() {
 	}
 	
 	
 	private Boleto createBoleto(LocalDate dataVencimento) {
-		Boleto boleto = new Boleto("VALE", dataVencimento, new BigDecimal(100));
+		Boleto boleto = new Boleto(CLIENTE_TESTE, dataVencimento, new BigDecimal(100));
 		boleto.setStatus(EnumStatus.PENDING);
 		return boleto;
 	}
@@ -90,7 +92,7 @@ public class BoletoApiApplicationTests {
 		this.repository.save(boleto);
 		assertThat(boleto.getId()).isNotNull();
 		assertThat(boleto.getMulta()).isNull();
-		assertThat(boleto.getCliente()).isEqualTo("VALE");
+		assertThat(boleto.getCliente()).isEqualTo(CLIENTE_TESTE);
 		assertThat(boleto.getStatus().id()).isEqualTo(EnumStatus.PENDING.id());
 	}
 

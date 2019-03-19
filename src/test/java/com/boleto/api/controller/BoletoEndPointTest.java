@@ -31,6 +31,12 @@ import com.boleto.api.model.EnumStatus;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class BoletoEndPointTest {
 
+	private static final String RESOURCE_NOT_FOUND = "Resource Not Found";
+
+	private static final String ICN = "ICN";
+
+	private static final String VALE = "VALE";
+
 	public static final String CLIENTE_TESTE ="CLIENTE_TESTE";  
 	
 	@Autowired
@@ -45,8 +51,6 @@ public class BoletoEndPointTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
-	
-	
 	@Before
 	public void contextLoads() {
 		System.out.println("Porta teste: "+port);
@@ -59,23 +63,14 @@ public class BoletoEndPointTest {
 		return boleto;
 	}
 	
-	private Optional<Boleto> createBoletoOptional(LocalDate dataVencimento, String nome) {
-		Boleto boleto = new Boleto(nome, dataVencimento, new BigDecimal(100));
-		boleto.setStatus(EnumStatus.PENDING);
-		boletoRepository.save(boleto);
-		Optional<Boleto> opt = boletoRepository.findByCliente(CLIENTE_TESTE);
-		return opt;
-	}
-	
-		
 	@Test
 	public void listBoletosTest() {
-		List<Boleto> boletos = Arrays.asList(createBoleto(LocalDate.now(), "VALE"),createBoleto(LocalDate.now(), "ICN"));
+		List<Boleto> boletos = Arrays.asList(createBoleto(LocalDate.now(), VALE),createBoleto(LocalDate.now(), ICN));
 		BDDMockito.when(boletoRepository.findAll()).thenReturn(boletos);
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos",String.class);
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
-		assertThat(response.getBody().contains("ICN")).isTrue();
-		assertThat(response.getBody().contains("VALE")).isTrue();
+		assertThat(response.getBody().contains(ICN)).isTrue();
+		assertThat(response.getBody().contains(VALE)).isTrue();
 	}
 	
 	@Test
@@ -86,7 +81,7 @@ public class BoletoEndPointTest {
 		Optional<Boleto> boletoOpt = Optional.of(boleto);
 		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/client_no_exist",String.class);
-		assertThat(response.getBody().contains("Resource Not Found")).isTrue();
+		assertThat(response.getBody().contains(RESOURCE_NOT_FOUND)).isTrue();
 		assertThat(response.getStatusCodeValue()).isEqualTo(404);
 
 	}
@@ -104,7 +99,7 @@ public class BoletoEndPointTest {
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/"+CLIENTE_TESTE,String.class);
 
 		assertThat(response.getBody().contains(CLIENTE_TESTE)).isTrue();
-		assertThat(response.getBody().contains("ICN")).isFalse();
+		assertThat(response.getBody().contains(ICN)).isFalse();
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
 	}
 	
