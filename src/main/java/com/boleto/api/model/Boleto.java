@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.boleto.api.dto.BoletoDetalheDto;
 import com.boleto.api.dto.BoletoDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,18 +80,22 @@ public class Boleto extends AbstractEntity{
 				build();
 	}
 	
+	@JsonIgnore
 	public Boolean isAtrasado() {
 		return LocalDate.now().isAfter(this.getDataVencimento());
 	}
-
+	
+	@JsonIgnore
 	public boolean isPaid() {
 		return this.getStatus().equals(EnumStatus.PAID);
 	}
 	
+	@JsonIgnore
 	public boolean isPending() {
 		return this.getStatus().equals(EnumStatus.PENDING);
 	}
 	
+	@JsonIgnore
 	public boolean isCanceled() {
 		return this.getStatus().equals(EnumStatus.CANCELED);
 	}
