@@ -73,25 +73,20 @@ public class BoletoController {
 	@GetMapping(path="/boletos/pagedAndSorted",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletosPaged(@PageableDefault(size = 3) Pageable page){ 
 		LOGGER.info("Chamada do end point - LISTAR_BOLETOS_PAGED -" );
-		ResponseApi<BoletoDto> boletoResponse;
-		
+		ResponseApi<Page<Boleto>> boletoResponse = new ResponseApi<Page<Boleto>>();
 		Page<Boleto>  boletos = null;
 		try {
 			boletos = service.findAll(page);
-			//List<BoletoDto> dtos = convertListBoletoToDto(boletos);
-			boletoResponse = new ResponseApi<BoletoDto>();
-			//boletoResponse.setData(boletos);
+			boletoResponse.setDataPaged(boletos);
 		} catch (Exception e) {
 			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  LISTAR_BOLETOS_PAGED - |");
 			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!",e);
 		}
 		
-		//if(boletos.isEmpty()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
+		if(!boletoResponse.getDataPaged().hasContent()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
 		
-		return new ResponseEntity<>(boletos, HttpStatus.OK) ;
+		return new ResponseEntity<>(boletoResponse, HttpStatus.OK) ;
 	}
-	
-	
 	
 	private List<BoletoDto> convertListBoletoToDto(List<Boleto> boletos) {
 		return boletos.stream().map(b -> b.converteBoletoToDto()).collect(Collectors.toList());
@@ -128,7 +123,7 @@ public class BoletoController {
 	
 	@GetMapping(path="/boletos/cliente/{cliente}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseApi<BoletoDetalheDto>> findByName(@PathVariable String cliente){ 
-		LOGGER.info("chamada do end point - FIND_BY_NAME - para o cliente: " + cliente );
+		LOGGER.info("  - FIND_BY_NAME - para o cliente: " + cliente );
 		Optional<Boleto> boleto = null;
 		Boleto resposta = null;
 		verificarSeClienteExiste(cliente);
