@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.Constants.ConstantException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,6 +34,7 @@ import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoService;
+import com.boleto.api.util.Constante;
 import com.boleto.api.web.exception.BusinessException;
 import com.boleto.api.web.exception.InternalServerException;
 import com.boleto.api.web.exception.ResourceNotFoundException;
@@ -50,7 +53,7 @@ public class BoletoController {
 	@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
-		LOGGER.info("Chamada do end point - LISTAR_BOLETOS -" );
+		LOGGER.info(Constante.LISTAR_BOLETOS);
 		ResponseApi<BoletoDto> boletoResponse;
 		
 		List<Boleto>  boletos = null;
@@ -60,8 +63,8 @@ public class BoletoController {
 			boletoResponse = new ResponseApi<BoletoDto>();
 			boletoResponse.setData(dtos);
 		} catch (Exception e) {
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  LISTAR_BOLETOS - |");
-			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!",e);
+			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + e.getMessage() + Constante.ERRO_LISTAR_BOLETO);
+			throw new InternalServerException(Constante.ERRO+ e.getMessage() + Constante.ERRO_LISTAR_BOLETO,e);
 		}
 		
 		if(boletos.isEmpty()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
@@ -72,15 +75,15 @@ public class BoletoController {
 	
 	@GetMapping(path="/boletos/pagedAndSorted",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletosPaged(@PageableDefault(size = 3) Pageable page){ 
-		LOGGER.info("Chamada do end point - LISTAR_BOLETOS_PAGED -" );
+		LOGGER.info(Constante.LISTAR_BOLETOS_PAGED);
 		ResponseApi<Page<Boleto>> boletoResponse = new ResponseApi<Page<Boleto>>();
 		Page<Boleto>  boletos = null;
 		try {
 			boletos = service.findAll(page);
 			boletoResponse.setDataPaged(boletos);
 		} catch (Exception e) {
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + " | -  LISTAR_BOLETOS_PAGED - |");
-			throw new InternalServerException("Erro: "+ e.getMessage() + " ao listar boletos. Contate o admin!",e);
+			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + e.getMessage() + Constante.LISTAR_BOLETOS_PAGED);
+			throw new InternalServerException(Constante.ERRO+ e.getMessage() + Constante.ERRO_LISTAR_BOLETO,e);
 		}
 		
 		if(!boletoResponse.getDataPaged().hasContent()) return new ResponseEntity<>(boletoResponse, HttpStatus.NO_CONTENT) ;		
@@ -103,11 +106,9 @@ public class BoletoController {
 	 * @param id
 	 * @return
 	 */
-	
-	
 	@GetMapping(path="/boletos/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> detalharBoleto(@PathVariable Long id){ 
-		LOGGER.info("Chamada do end point - DETALHAR_BOLETO - para o id: " +id);
+		LOGGER.info(Constante.DETALHAR_BOLETO+id);
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		Boleto resposta = boleto.get();
@@ -123,7 +124,7 @@ public class BoletoController {
 	
 	@GetMapping(path="/boletos/cliente/{cliente}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseApi<BoletoDetalheDto>> findByName(@PathVariable String cliente){ 
-		LOGGER.info("  - FIND_BY_NAME - para o cliente: " + cliente );
+		LOGGER.info(Constante.FIND_BY_NAME + cliente );
 		Optional<Boleto> boleto = null;
 		Boleto resposta = null;
 		verificarSeClienteExiste(cliente);
@@ -134,8 +135,8 @@ public class BoletoController {
 			if(isCalculable(resposta) )	resposta = service.calcularMulta(boleto.get());
 				
 		} catch(Exception ex) {
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ ex.getMessage() + " | -  FIND_BY_NAME - | para o Clinte: " + cliente);
-			throw new InternalServerException("Erro ao consultar boleto por nome. Contate o admin!",ex);
+			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + ex.getMessage() + Constante.FIND_BY_NAME + cliente);
+			throw new InternalServerException(Constante.ERRO_BOLETO_POR_NOME,ex);
 		}
 		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();
 		boletoResponse.setData(Arrays.asList(resposta.converteBoletoToDetalheDto()));
@@ -159,7 +160,7 @@ public class BoletoController {
 	
 	@PostMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
-		LOGGER.info("Chamada do end point - CRIAR_BOLETO - para o Cliente: " + dto.getCliente() );
+		LOGGER.info(Constante.CRIAR_BOLETO+ dto.getCliente() );
 		Boleto ticket = null;
 		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
 		try {
@@ -168,8 +169,8 @@ public class BoletoController {
 			
 			ticket = service.salvar(ticket);
 		} catch(Exception ex){
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ ex.getMessage() + " | - CRIAR_BOLETO - | para o Clinte: " + dto.getCliente());
-			throw new InternalServerException("Erro ao criar boleto. Contate o admin!",ex);
+			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + ex.getMessage() + Constante.CRIAR_BOLETO+ dto.getCliente());
+			throw new InternalServerException(Constante.ERRO_CRIAR_BOLETO,ex);
 		}
 		
 		boletoResponse.setData(Arrays.asList(ticket.converteBoletoToDto()));
@@ -189,7 +190,7 @@ public class BoletoController {
 	 */
 	@PutMapping("/boletos/{id}/pagamento")
 	public ResponseEntity<Object> pagarboleto(@RequestBody @Valid DataDto dataPagamento, @PathVariable Long id) {
-		LOGGER.info("Chamada do end point - PAGAR_BOLETO - para o id: " + id );
+		LOGGER.info(Constante.PAGAR_BOLETO + id );
 		verificarSeBoletoExiste(id);
 		
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
@@ -222,7 +223,7 @@ public class BoletoController {
 	 */
 	@DeleteMapping("/boletos/{id}")
 	public ResponseEntity<Object> cancelarBoleto(@PathVariable Long id) {
-		LOGGER.info("Chamada do end point CANCELAR_BOLETO para o id: " + id );
+		LOGGER.info(Constante.CANCELAR_BOLETO + id );
 		verificarSeBoletoExiste(id);
 			
 		Optional<Boleto> boleto = service.buscarPorId(id);
