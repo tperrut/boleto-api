@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-
-
 ![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
  
@@ -52,8 +48,3 @@ Foi utilizado a biblioteca [Swagger](http://swagger.com).
 ## Copyright
 
 Released under the Apache License 2.0. See the [LICENSE](https://github.com/codecentric/springboot-sample-app/blob/master/LICENSE) file.
- 
-=======
-# boleto-api
-API para gerenciamento de boletos.
->>>>>>> 3414648d5c032576c025e646ac334f6fb581f517
