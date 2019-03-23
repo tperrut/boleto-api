@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT D-Dspring.profiles.active=prod -jar /target/boleto-api=1.0.0.jar
