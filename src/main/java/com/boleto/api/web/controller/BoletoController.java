@@ -7,12 +7,22 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.bcel.Const;
+import com.boleto.api.dto.BoletoDetalheDto;
+import com.boleto.api.dto.BoletoDto;
+import com.boleto.api.dto.DataDto;
+import com.boleto.api.model.Boleto;
+import com.boleto.api.model.EnumStatus;
+import com.boleto.api.service.BoletoService;
+import com.boleto.api.util.Constante;
+import com.boleto.api.web.exception.BusinessException;
+import com.boleto.api.web.exception.InternalServerException;
+import com.boleto.api.web.exception.ResourceNotFoundException;
+import com.boleto.api.web.response.ResponseApi;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.Constants.ConstantException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,18 +37,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.boleto.api.dto.BoletoDetalheDto;
-import com.boleto.api.dto.BoletoDto;
-import com.boleto.api.dto.DataDto;
-import com.boleto.api.model.Boleto;
-import com.boleto.api.model.EnumStatus;
-import com.boleto.api.service.BoletoService;
-import com.boleto.api.util.Constante;
-import com.boleto.api.web.exception.BusinessException;
-import com.boleto.api.web.exception.InternalServerException;
-import com.boleto.api.web.exception.ResourceNotFoundException;
-import com.boleto.api.web.response.ResponseApi;
 
 
 @RestController
