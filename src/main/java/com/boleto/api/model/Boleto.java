@@ -46,7 +46,7 @@ public class Boleto extends AbstractEntity{
 	private LocalDate dataPagamento;
 	
 	@NotEmpty(message = "Cliente não pode ser vazio")
-	@Column
+	@Column(nullable = false)
 	private String cliente;
 	
 	@Column(nullable = false)
@@ -59,8 +59,8 @@ public class Boleto extends AbstractEntity{
 		this.total= totalParam;
 	}
 	
-	 @PrePersist
-	    public void onPrePersist() { System.out.println("Tá rolando um PrePersist");}
+	@PrePersist
+	public void onPrePersist() { System.out.println("Tá rolando um PrePersist");}
 	       
 	@PreUpdate
 	public void onPreUpdate() { System.out.println("Tá rolando um PreUpdate");}

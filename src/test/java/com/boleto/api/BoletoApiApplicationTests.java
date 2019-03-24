@@ -33,9 +33,6 @@ public class BoletoApiApplicationTests {
 	private BoletoRepository repository;
 	
 	@Autowired
-	private BoletoController controller;
-	
-	@Autowired
 	private BoletoServiceImpl service;
 	
 	@Rule
@@ -62,8 +59,15 @@ public class BoletoApiApplicationTests {
 	}
 	
 	@Test
-	public void calcularMultaMaisDe10DiasBoletoTest() {
+	public void testIfBoletoEmDiaMultaIsNullTest() {
 		Boleto boleto = createBoleto(LocalDate.now().plusDays(20)); 
+		this.service.calcularMulta(boleto);
+		assertThat(boleto.getMulta()).isNull();
+	}
+	
+	@Test
+	public void calcularMultaMaisDe10DiasBoletoTest() {
+		Boleto boleto = createBoleto(LocalDate.now().minusDays(20)); 
 		this.service.calcularMulta(boleto);
 		assertThat(boleto.getMulta()).isEqualTo(10.0);
 		assertThat(boleto.getTotal().doubleValue()).isEqualTo(110.00);
@@ -71,23 +75,12 @@ public class BoletoApiApplicationTests {
 	
 	@Test
 	public void calcularMultaMenos10DiasBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(5)); 
+		Boleto boleto = createBoleto(LocalDate.now().minusDays(5)); 
 		this.service.calcularMulta(boleto);
 		assertThat(boleto.getMulta()).isEqualTo(5.0);
 		assertThat(boleto.getTotal().doubleValue()).isEqualTo(105.00);
 	}
 	
-	
-	@Test
-	public void detalharBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().minusDays(22)); 
-		this.repository.save(boleto);
-		Optional<Boleto> retorno =  this.repository.findById(boleto.getId());
-		assertThat(retorno.isPresent()).isTrue();
-		this.service.calcularMulta(retorno.get());
-		assertThat(retorno.get().getMulta()).isNotNull();
-	}
-
 	
 	@Test
 	public void criarBoletoTest() {
@@ -99,32 +92,6 @@ public class BoletoApiApplicationTests {
 		assertThat(boleto.getStatus().id()).isEqualTo(EnumStatus.PENDING.id());
 	}
 
-	@Test
-	public void boletoNotFoundTest() {
-		thrown.expect(ResourceNotFoundException.class);
-		this.controller.verificarSeBoletoExiste(1898L);
-	}
-	
-	@Test
-	public void alterarBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(12));
-		boleto = this.repository.save(boleto);
-		boleto.setCliente(CLIENTE_FAIL);
-		boleto = this.repository.save(boleto);
-		assertThat(boleto.getCliente()).isEqualTo(CLIENTE_FAIL);
-	}
-	
-	@Test
-	public void deleteBoletoTest() {
-		Boleto boleto = createBoleto(LocalDate.now().plusDays(12));
-		boleto = this.repository.save(boleto);
-		Long id = boleto.getId();
-		this.repository.delete(boleto);
-		Optional<Boleto> retorno =  this.repository.findById(id);
-		assertThat(retorno.isPresent()).isFalse();
-	}
-	
-	
 	@Test
 	public void validarBoletoAtrasadoTest() {
 		Boleto boleto = createBoleto(LocalDate.now().minusDays(20));

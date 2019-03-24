@@ -57,6 +57,10 @@ public class BoletoServiceImpl implements BoletoService {
 	
 	@Override 
 	public Boleto calcularMulta(Boleto boleto) {
+		
+		if(!boleto.isAtrasado()) 
+			return boleto;
+
 		Double multa;
 		
 		if(isMenorOuIgualDezDias( boleto.getDataVencimento())){
@@ -80,7 +84,7 @@ public class BoletoServiceImpl implements BoletoService {
 	}
 	
 	private Boolean isMenorOuIgualDezDias(LocalDate dataVencimento) {
-		Period periodo = Period.between(LocalDate.now(), dataVencimento);
+		Period periodo = Period.between(dataVencimento, LocalDate.now());
 		return periodo.getDays() <= 10;
 	}
 

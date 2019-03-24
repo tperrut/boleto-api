@@ -26,6 +26,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
+import com.boleto.api.web.controller.BoletoController;
+import com.boleto.api.web.exception.ResourceNotFoundException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -47,6 +49,9 @@ public class BoletoEndPointTest {
 	
 	@MockBean
 	private BoletoRepository boletoRepository;
+	
+	@Autowired
+	private BoletoController controller;
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -86,6 +91,11 @@ public class BoletoEndPointTest {
 
 	}
 	
+	@Test
+	public void boletoNotFoundTest() {
+		thrown.expect(ResourceNotFoundException.class);
+		this.controller.verificarSeBoletoExiste(1898L);
+	}
 	
 	@Test
 	public void findByClientValidTest() {

@@ -5,19 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-
-import com.boleto.api.dto.BoletoDetalheDto;
-import com.boleto.api.dto.BoletoDto;
-import com.boleto.api.dto.DataDto;
-import com.boleto.api.model.Boleto;
-import com.boleto.api.model.EnumStatus;
-import com.boleto.api.service.BoletoService;
-import com.boleto.api.util.Constante;
-import com.boleto.api.web.exception.BusinessException;
-import com.boleto.api.web.exception.InternalServerException;
-import com.boleto.api.web.exception.ResourceNotFoundException;
-import com.boleto.api.web.response.ResponseApi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +26,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.boleto.api.dto.BoletoDetalheDto;
+import com.boleto.api.dto.BoletoDto;
+import com.boleto.api.dto.DataDto;
+import com.boleto.api.model.Boleto;
+import com.boleto.api.model.EnumStatus;
+import com.boleto.api.service.BoletoService;
+import com.boleto.api.util.Constante;
+import com.boleto.api.web.exception.BusinessException;
+import com.boleto.api.web.exception.InternalServerException;
+import com.boleto.api.web.exception.ResourceNotFoundException;
+import com.boleto.api.web.response.ResponseApi;
 
 
 @RestController
@@ -166,6 +167,8 @@ public class BoletoController {
 			ticket.setStatus(EnumStatus.PENDING);
 			
 			ticket = service.salvar(ticket);
+		} catch(ConstraintViolationException  ex){
+			throw new ConstraintViolationException(ex.getConstraintViolations());
 		} catch(Exception ex){
 			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + ex.getMessage() + Constante.CRIAR_BOLETO+ dto.getCliente());
 			throw new InternalServerException(Constante.ERRO_CRIAR_BOLETO,ex);
@@ -202,7 +205,7 @@ public class BoletoController {
 		
 		service.salvar(boletoOptional.get());
 		} catch (Exception e) {
-			LOGGER.error("INTERNAL_SERVER_ERROR : "+ e.getMessage() + "| -  PAGAR_BOLETO - | para o id: " + id  );
+			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + e.getMessage() + Constante.PAGAR_BOLETO+ id);
 			throw new InternalServerException("Erro ao Pagar o boleto. Contate o admin!",e);
 		}
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
