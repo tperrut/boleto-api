@@ -46,7 +46,7 @@ pom.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 target/classes/META-INF/maven/com.boleto.api/boleto-api/pom.properties
 /.mvn/
 /.settings/
