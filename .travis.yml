@@ -3,4 +3,6 @@ jdk:
   - oraclejdk8
 deploy:
   provider: heroku
-  on: production    
+  on: production
+  strategy: git    
+  
