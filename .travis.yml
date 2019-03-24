@@ -5,4 +5,5 @@ deploy:
   provider: heroku
   on: production
   strategy: git    
-  
+  api_key: 
+    secure: OwXkzXphRc65wMnu2HdHuA
