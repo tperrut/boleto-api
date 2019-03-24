@@ -8,7 +8,7 @@ API REST para geração de boletos.
 	
  |VERB | END_POINT       |
 |:---  |:---              |
-   |POST | create_boleto   |   
+   |POST | create_boleto  |   
   |GET  | list_boletos    |   
    | GET | datail_boltetos |   
    | GET | find_by_cliente  |
@@ -17,7 +17,7 @@ API REST para geração de boletos.
 --------
 
 
- Foi desenvolvida utilizando [Spring Boot](http://projects.spring.io/spring-boot/)   
+ It was developed using [Spring Boot](http://projects.spring.io/spring-boot/).   
 
 ## Requirements
 
