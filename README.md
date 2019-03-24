@@ -11,7 +11,7 @@ API REST para geração de boletos.
    |POST | create_boleto   |   
   |GET  | list_boletos    |   
    | GET | datail_boltetos |   
-   | GET | find_by_liente  |
+   | GET | find_by_cliente  |
    | PUT | payment_boleto  |
    |DELETE | cancel_boleto |
 --------
