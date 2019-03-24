@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public abstract class AbstractEntity implements Serializable {
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	//@Type(type="uuid-binary") private UUID refId;
