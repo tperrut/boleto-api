@@ -1,6 +1,9 @@
 package com.boleto.api.util;
 
 public class Constante {
+	//Home
+	public static final String WELCOME = "Welcome to Boleto-API";
+	public static final String SWAGGER = "swagger-ui.html";
 	//Logger
 	public static String CANCELAR_BOLETO = " | - CANCELAR_BOLETO - | para o id: ";
 	public static String DETALHAR_BOLETO = " | - DETALHAR_BOLETO - | para o id: ";
