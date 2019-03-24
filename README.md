@@ -1,15 +1,21 @@
+
 ![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
- 
-# Boleto - API
+# Boleto - API  
+## [![Build Status](https://travis-ci.com/tperrut/boleto-api.svg?branch=master)](https://travis-ci.com/tperrut/boleto-api)
 API REST para geração de boletos.
 	O sistema terá os seguintes endpoints :
-- Criar boleto
-- Listar boletos
-- Ver detalhes
-- Find By Cliente
-- Pagar um boleto
-- Cancelar um boleto
+	
+ |VERB | END_POINT       |
+|:---  |:---              |
+   |POST | create_boleto   |   
+  |GET  | list_boletos    |   
+   | GET | datail_boltetos |   
+   | GET | find_by_liente  |
+   | PUT | payment_boleto  |
+   |DELETE | cancel_boleto |
+--------
+
 
  Foi desenvolvida utilizando [Spring Boot](http://projects.spring.io/spring-boot/)   
 
