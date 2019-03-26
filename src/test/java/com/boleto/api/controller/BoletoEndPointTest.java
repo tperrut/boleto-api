@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.boleto.api.dao.BoletoRepository;
+import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.web.controller.BoletoController;
@@ -89,6 +90,22 @@ public class BoletoEndPointTest {
 		assertThat(response.getBody().contains(RESOURCE_NOT_FOUND)).isTrue();
 		assertThat(response.getStatusCodeValue()).isEqualTo(404);
 
+	}
+	
+	//@Test
+	public void pagarBoletoEmDiaTest() {
+	}
+	
+	//@Test
+	public void pagarBoletoEmAtrasoTest() {
+	}
+	
+	//@Test
+	public void pagarBoletoComMaisDe10DiasEmAtrasoTest() {
+	}
+	
+	//@Test
+	public void pagarBoletoComMenosDe10DiasEmAtrasoTest() {
 	}
 	
 	@Test

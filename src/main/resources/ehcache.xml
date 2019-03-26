@@ -1,6 +1,6 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="ehcache.xsd">
 	<cache name="listarTodosCache" maxEntriesLocalHeap="200"
-		timeToLiveSeconds="20">
+		timeToIdleSeconds="20">
 	</cache>
 </ehcache>

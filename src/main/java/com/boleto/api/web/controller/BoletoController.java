@@ -167,8 +167,6 @@ public class BoletoController {
 			ticket.setStatus(EnumStatus.PENDING);
 			
 			ticket = service.salvar(ticket);
-		} catch(ConstraintViolationException  ex){
-			throw new ConstraintViolationException(ex.getConstraintViolations());
 		} catch(Exception ex){
 			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + ex.getMessage() + Constante.CRIAR_BOLETO+ dto.getCliente());
 			throw new InternalServerException(Constante.ERRO_CRIAR_BOLETO,ex);
@@ -198,10 +196,16 @@ public class BoletoController {
 		if(!boletoOptional.get().isPending()) {
 			throw new BusinessException("Boleto deve estar com o status PENDING para ser pago");
 		}	
+		Boleto bol = null;
+		
+		if(isCalculable(boletoOptional.get()) ) {
+			bol = service.calcularMulta(boletoOptional.get());
+		}
 		
 		try {
 		boletoOptional.get().setDataPagamento(dataPagamento.getDataPagamento());
 		boletoOptional.get().setStatus(EnumStatus.PAID);
+		boletoOptional.get().setMulta(bol.getMulta());
 		
 		service.salvar(boletoOptional.get());
 		} catch (Exception e) {

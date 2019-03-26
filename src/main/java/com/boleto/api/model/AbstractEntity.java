@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import lombok.Data;
 
 @SuppressWarnings("serial")
@@ -14,12 +16,11 @@ import lombok.Data;
 @Data
 public abstract class AbstractEntity implements Serializable {
 
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
-	
-	//@Type(type="uuid-binary") private UUID refId;
-	
-	
-	
-}
 
+	// @Type(type="uuid-binary") private UUID refId;
+
+}
