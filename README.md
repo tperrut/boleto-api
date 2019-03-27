@@ -2,7 +2,7 @@
 ![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
 # Boleto - API  
-## [![Build Status](https://travis-ci.com/tperrut/boleto-api.svg?branch=master)](https://travis-ci.com/tperrut/boleto-api)
+## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api)
 API REST para geração de boletos.
 	O sistema terá os seguintes endpoints :
 	
