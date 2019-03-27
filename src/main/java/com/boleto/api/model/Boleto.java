@@ -80,6 +80,20 @@ public class Boleto extends AbstractEntity{
 				build();
 	}
 	
+	/**
+	 * Regra para definir se vamos calcular o boleto:
+	 * 
+	 * Não pode ter os seguintes Status: PAID e CANCELED |
+	 * Deve estar atrasado
+	 * 
+	 * @param Boleto resposta
+	 * @return Boleto
+	 */
+	public boolean isCalculable() {
+		return this.isAtrasado()  & isPending()  ;
+	}
+	
+	
 	@JsonIgnore
 	public Boolean isAtrasado() {
 		return LocalDate.now().isAfter(this.getDataVencimento());

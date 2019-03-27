@@ -104,4 +104,21 @@ public class BoletoApiApplicationTests {
 		assertThat(boleto.isAtrasado()).isFalse();
 	}
 	
+	@Test
+	public void isNotCalculableBoletoTest() {
+		Boleto boleto = createBoleto(LocalDate.now());
+		assertThat(boleto.isCalculable()).isFalse();
+		
+		boleto.setStatus(EnumStatus.PAID);
+		assertThat(boleto.isCalculable()).isFalse();
+		
+		boleto.setStatus(EnumStatus.PAID);
+		assertThat(boleto.isCalculable()).isFalse();
+	}
+	
+	@Test
+	public void isCalculableBoletoTest() {
+		Boleto boleto = createBoleto(LocalDate.now().minusDays(12));
+		assertThat(boleto.isCalculable()).isTrue();
+	}
 }

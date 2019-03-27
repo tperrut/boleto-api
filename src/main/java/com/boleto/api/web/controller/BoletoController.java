@@ -110,7 +110,7 @@ public class BoletoController {
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		Boleto resposta = boleto.get();
 		
-		if(isCalculable(resposta) ) {
+		if(resposta.isCalculable() ) {
 			resposta = service.calcularMulta(boleto.get());
 		}
 		
@@ -129,7 +129,8 @@ public class BoletoController {
 			boleto = service.buscarPorCliente(cliente);
 			System.out.println(service.buscarPorCliente(cliente));
 			resposta = boleto.get();
-			if(isCalculable(resposta) )	resposta = service.calcularMulta(boleto.get());
+			if(resposta.isCalculable() )
+				resposta = service.calcularMulta(boleto.get());
 				
 		} catch(Exception ex) {
 			LOGGER.error(Constante.INTERNAL_SERVER_ERROR + ex.getMessage() + Constante.FIND_BY_NAME + cliente);
@@ -142,19 +143,6 @@ public class BoletoController {
 
 	
 
-	/**
-	 * Regra para definir se vamos calcular o boleto:
-	 * 
-	 * Não pode ter os seguintes Status: PAID e CANCELED |
-	 * Deve estar atrasado
-	 * 
-	 * @param Boleto resposta
-	 * @return Boleto
-	 */
-	private boolean isCalculable(Boleto resposta) {
-		return !resposta.isPaid() || !resposta.isCanceled() || resposta.isAtrasado();
-	}
-	
 	@PostMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
 		LOGGER.info(Constante.CRIAR_BOLETO+ dto.getCliente() );
@@ -196,7 +184,7 @@ public class BoletoController {
 		}	
 		Boleto bol = null;
 		
-		if(isCalculable(boletoOptional.get()) ) {
+		if(boletoOptional.get().isCalculable() ) {
 			bol = service.calcularMulta(boletoOptional.get());
 		}
 		
