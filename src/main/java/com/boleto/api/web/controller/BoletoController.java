@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -49,7 +47,7 @@ public class BoletoController {
 	@Autowired
 	private BoletoService service;
 	
-	@Cacheable( "listarTodosCache" )
+	//@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> listarBoletos(){ 
 		LOGGER.info(Constante.LISTAR_BOLETOS);
