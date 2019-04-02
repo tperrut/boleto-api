@@ -4,7 +4,7 @@
 # Boleto - API  
 ## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api)
 
-This project aims to create a * API Rest * for bankroll generation, using technology [Java 8]((http://java.com). [SpringBoot](http://projects.spring.io/spring-boot/) was used to build the API, [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku].
+This project aims to create a **API Rest** for bankroll generation, using technology [Java 8]((http://java.com). [SpringBoot](http://projects.spring.io/spring-boot/) was used to build the API, [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
 
 >The system has the following endpoint
 	
@@ -27,7 +27,7 @@ For building and running the application you need:
 
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Maven 3](https://maven.apache.org)
-
+- IDE or editor of your choice
 
 ## Getting started
 
@@ -71,9 +71,8 @@ mvn test
  
 ## Documentation
 
-Foi utilizado a biblioteca [Swagger](http://swagger.com).
-	Url para acessar a documentação dos EndPoints da API :
-	`http://server:port/swagger-ui.html`
+We used the [Swagger](http://swagger.com) library .
+Url to access API Endpoint documentation:	`http://server:port/swagger-ui.html`
 
 ## Information
 
