@@ -4,7 +4,7 @@
 # Boleto - API  
 ## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api)
 
-This project aims to create a **API Rest** for bankroll generation, using technology [Java 8]((http://java.com). [SpringBoot](http://projects.spring.io/spring-boot/) was used to build the API, [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
+This project aims to create a **API Rest** for bankroll generation, using technology [Java 8](http://java.com). It was developed using [Spring Boot](http://projects.spring.io/spring-boot/), [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
 
 >The system has the following endpoint
 	
@@ -19,7 +19,7 @@ This project aims to create a **API Rest** for bankroll generation, using techno
 --------
 
 
- It was developed using [Spring Boot](http://projects.spring.io/spring-boot/).   
+    
 
 ## Requirements
 
