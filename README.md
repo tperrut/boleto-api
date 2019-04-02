@@ -12,7 +12,7 @@ This project aims to create a **API Rest** for bankroll generation, using techno
 |:---  |:---              |
    |POST | create_boleto  |   
   |GET  | list_boletos    |   
-   | GET | datail_boltetos |   
+   | GET | detail_boltetos |   
    | GET | find_by_cliente  |
    | PUT | payment_boleto  |
    |DELETE | cancel_boleto |
