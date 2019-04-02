@@ -26,13 +26,19 @@ This project aims to create a **API Rest** for bankroll generation, using techno
 For building and running the application you need:
 
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-- [Maven 3](https://maven.apache.org)
+- [Maven 3](https://maven.apache.org) - (Optional)
 - IDE or editor of your choice
 
 ## Getting started
 
 To start this web application just follow these steps:
+	
+   Build the project no Maven:
 
+	```shell
+	 $ ./mvnw clean package spring-boot:run 			
+	```  		
+	
    Build the project via Maven:
 
     $ mvn clean install
