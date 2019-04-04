@@ -2,7 +2,7 @@
 ![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
 # Boleto - API  
-## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api)
+## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api) [![Coverage Status](https://coveralls.io/repos/github/tperrut/boleto-api/badge.svg?branch=master)](https://coveralls.io/github/tperrut/boleto-api?branch=master)
 
 This project aims to create a **API Rest** for bankroll generation, using technology [Java 8](http://java.com). It was developed using [Spring Boot](http://projects.spring.io/spring-boot/), [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
 
@@ -26,7 +26,7 @@ This project aims to create a **API Rest** for bankroll generation, using techno
 For building and running the application you need:
 
 - [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-- [Maven 3](https://maven.apache.org) - (Optional)
+- [Maven 3](https://maven.apache.org) - 
 - IDE or editor of your choice
 
 ## Getting started
@@ -83,7 +83,7 @@ Url to access API Endpoint documentation:	`http://server:port/swagger-ui.html`
 ## Information
 
 - Spring boot automatically provides an embedded Tomcat server and a persistence layer based on Hibernate (as JPA provider).
-- Data are automatically stored in an in-memory database. Changes are lost after restarting the application.
+
 - All REST endpoints *can be tested locally with the Swagger* UI frontend:
 
 
