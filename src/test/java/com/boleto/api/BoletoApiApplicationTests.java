@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,14 +17,10 @@ import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoServiceImpl;
-import com.boleto.api.web.controller.BoletoController;
-import com.boleto.api.web.exception.ResourceNotFoundException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BoletoApiApplicationTests {
-
-	private static final String CLIENTE_FAIL = "VALE NADA";
 
 	public final String CLIENTE_TESTE = "VALE";
 
