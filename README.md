@@ -73,7 +73,8 @@ Use maven goal 'test'
 ```shell
 mvn test
 ```
-
+## Heroku
+Url to access API on Heroku https://boleto-rest-api.herokuapp.com/
  
 ## Documentation
 
