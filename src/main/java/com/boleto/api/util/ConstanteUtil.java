@@ -31,5 +31,6 @@ public class ConstanteUtil {
 	
 
 	public static final String USER_DETAIL_NOME = "USER_DETAIL:  Nome: ";
+	public static final String BOLETO_TESTE = "boleto_teste";
 	
 }	

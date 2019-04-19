@@ -1,6 +1,7 @@
 package com.boleto.api.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.boleto.api.dto.BoletoDto;
+import com.boleto.api.util.ConstanteUtil;
 
 public class BoletoControllerTest extends AbstractTest {
 	
@@ -38,7 +40,7 @@ public class BoletoControllerTest extends AbstractTest {
 	@Test
 	public void createBoleto() throws Exception {
 	   String uri = "/rest/boletos";
-	   BoletoDto dto = new BoletoDto("BOLETO_TESTE",LocalDate.now(), new BigDecimal(1000));
+	   BoletoDto dto = new BoletoDto(ConstanteUtil.BOLETO_TESTE,LocalDate.now(), new BigDecimal(1000));
 	   
 	   String inputJson = super.mapToJson(dto);
 	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
@@ -46,7 +48,19 @@ public class BoletoControllerTest extends AbstractTest {
 	   
 	   int status = mvcResult.getResponse().getStatus();
 	   assertEquals(201, status);
-	   //String content = mvcResult.getResponse().getContentAsString();	   assertEquals(content, "Product is created successfully");
+	 
 	}
 	
+	@Test
+	public void findBoletoByCliente() throws Exception {
+	   String uri = "/rest/boletos/cliente/"+ConstanteUtil.BOLETO_TESTE;
+	   
+	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+	      .contentType(MediaType.APPLICATION_JSON_VALUE).content("")).andReturn();
+	   
+	   int status = mvcResult.getResponse().getStatus();
+	   assertEquals(200, status);
+	   String content = mvcResult.getResponse().getContentAsString();	 
+	   assertTrue(content, content.contains(ConstanteUtil.BOLETO_TESTE));
+	}
 }
