@@ -25,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.boleto.api.dao.BoletoRepository;
-import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.web.controller.BoletoController;

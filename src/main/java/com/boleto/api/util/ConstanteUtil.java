@@ -1,15 +1,6 @@
 package com.boleto.api.util;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 public class ConstanteUtil {
-	
-	
-	public static void main(String[] args) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-		System.out.println(encoder.encode("123"));
-		
-	}
 	
 	//Home
 	public static final String WELCOME = "Welcome to Boleto-API";

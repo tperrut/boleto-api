@@ -17,6 +17,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +51,8 @@ public class BoletoController {
 	@Autowired
 	private BoletoService service;
 	
-	//@Cacheable( "listarTodosCache" )
 	@GetMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Object> listarBoletos(){ 
 		LOGGER.info(ConstanteUtil.LISTAR_BOLETOS);
 		ResponseApi<BoletoDto> boletoResponse;
@@ -105,8 +108,9 @@ public class BoletoController {
 	 * @return
 	 */
 	@GetMapping(path="/boletos/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> detalharBoleto(@PathVariable Long id){ 
+	public ResponseEntity<Object> detalharBoleto(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails){ 
 		LOGGER.info(ConstanteUtil.DETALHAR_BOLETO+id);
+		LOGGER.info(ConstanteUtil.USER_DETAIL_NOME+ userDetails.getUsername());
 		verificarSeBoletoExiste(id);
 		Optional<Boleto> boleto = service.buscarPorId(id);
 		Boleto resposta = boleto.get();
