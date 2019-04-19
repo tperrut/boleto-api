@@ -1,6 +1,7 @@
 package com.boleto.api.util;
 
 public class ConstanteUtil {
+	
 	//Home
 	public static final String WELCOME = "Welcome to Boleto-API";
 	public static final String SWAGGER = "swagger-ui.html";
@@ -26,5 +27,9 @@ public class ConstanteUtil {
 	public static final String ERRO_PAGAR = "Erro ao Pagar boleto. Contate o admin!";
 	public static final String ERRO_CRIAR_BOLETO="Erro ao criar boleto. Contate o admin!";
 	public static final String ERRO_CANCELAR_BOLETO="Erro ao Cancelar boleto. Contate o admin!";
-	public static final String ERRO_NOT_PENDING = "Boleto deve estar com o status PENDING para ser pago";
+	public static final String ERRO_NOT_PENDING = "Boleto deve estar com o status PENDING";
+	
+
+	public static final String USER_DETAIL_NOME = "USER_DETAIL:  Nome: ";
+	
 }	

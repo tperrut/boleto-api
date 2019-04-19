@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,9 @@ public class HomeController {
 	@Value(value="${spring.server.url}")
 	String server;
 	
+	
 	@GetMapping(path="/",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('USER')")
 	public Object home() {
 		Map<String,String> map= new HashMap<String,String>();
 		map.put("msg", ConstanteUtil.WELCOME);
@@ -25,5 +28,4 @@ public class HomeController {
 		JSONPObject response = new JSONPObject("",map);
 		return response.getValue();
 	}
-	
 }
