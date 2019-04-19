@@ -12,7 +12,7 @@ This project aims to create a **API Rest** for bankroll generation, using techno
 |:---  |:---              |
    |POST | create_boleto  |   
   |GET  | list_boletos    |   
-   | GET | detail_boltetos |   
+   | GET | detail_boletos |   
    | GET | find_by_cliente  |
    | PUT | payment_boleto  |
    |DELETE | cancel_boleto |
@@ -76,10 +76,37 @@ mvn test
 ## Heroku
 Url to access API on Heroku https://boleto-rest-api.herokuapp.com/
  
+## Config Security
+The Basic authentication was implemented with Spring Security.
+
+    Two users have been created with their permissions.
+
+> The following Http Verbs (PUT, DELETE) are protected with permission only for the Administrator Profile. Just like the End Point: "rest/boletos"
+
+> The End Point "/" must be authenticated with the default user profile
+
+ ***1. Default User***
+
+| userName  |  "user"|
+|--|--|
+| password | "123" |
+| Roles |  "USER"   |
+
+
+***2. Administrator User***
+
+| userName  |  "admin"|
+|--|--|
+| password | "123" |
+| Roles |  "USER" , "ADMIN"  |
+
+
+
+
 ## Documentation
 
 We used the [Swagger](http://swagger.com) library .
-Url to access API Endpoint documentation:	`http://server:port/swagger-ui.html`
+Url to access API Endpoint documentation:	`http://server/swagger-ui.html`
 
 ## Information
 
@@ -91,3 +118,4 @@ Url to access API Endpoint documentation:	`http://server:port/swagger-ui.html`
 ## Copyright
 
 Released under the Apache License 2.0. See the [LICENSE](https://github.com/codecentric/springboot-sample-app/blob/master/LICENSE) file.
+
