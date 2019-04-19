@@ -1,6 +1,16 @@
 package com.boleto.api.util;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class ConstanteUtil {
+	
+	
+	public static void main(String[] args) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
+		System.out.println(encoder.encode("123"));
+		
+	}
+	
 	//Home
 	public static final String WELCOME = "Welcome to Boleto-API";
 	public static final String SWAGGER = "swagger-ui.html";
@@ -26,5 +36,9 @@ public class ConstanteUtil {
 	public static final String ERRO_PAGAR = "Erro ao Pagar boleto. Contate o admin!";
 	public static final String ERRO_CRIAR_BOLETO="Erro ao criar boleto. Contate o admin!";
 	public static final String ERRO_CANCELAR_BOLETO="Erro ao Cancelar boleto. Contate o admin!";
-	public static final String ERRO_NOT_PENDING = "Boleto deve estar com o status PENDING para ser pago";
+	public static final String ERRO_NOT_PENDING = "Boleto deve estar com o status PENDING";
+	
+
+	public static final String USER_DETAIL_NOME = "USER_DETAIL:  Nome: ";
+	
 }	
