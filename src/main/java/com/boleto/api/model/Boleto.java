@@ -89,6 +89,7 @@ public class Boleto extends AbstractEntity{
 	 * @param Boleto resposta
 	 * @return Boleto
 	 */
+	@JsonIgnore
 	public boolean isCalculable() {
 		return this.isAtrasado()  & isPending()  ;
 	}

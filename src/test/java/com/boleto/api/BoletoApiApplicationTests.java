@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.boleto.api.dao.BoletoRepository;
+import com.boleto.api.dto.BoletoDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.service.BoletoServiceImpl;
@@ -45,6 +46,13 @@ public class BoletoApiApplicationTests {
 		return boleto;
 	}
 	
+	@Test
+	public void convertBoletoEmBoletoDTOTest() {
+		Boleto boleto = createBoleto(LocalDate.now().minusDays(20)); 
+		Object dto = boleto.converteBoletoToDto();
+		assertThat(dto).isInstanceOf(BoletoDto.class);
+		assertThat(dto).hasNoNullFieldsOrProperties();
+	}
 
 	@Test
 	public void calcularMultaBoletoTest() {
