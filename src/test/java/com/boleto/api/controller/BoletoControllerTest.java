@@ -1,7 +1,6 @@
 package com.boleto.api.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,11 +8,11 @@ import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.boleto.api.dto.BoletoDto;
-import com.boleto.api.model.Boleto;
 
 public class BoletoControllerTest extends AbstractTest {
 	
@@ -24,10 +23,12 @@ public class BoletoControllerTest extends AbstractTest {
 	}
 	
 	@Test
+	@WithMockUser(roles = "ADMIN")
 	public void getBoletosListEmpty() throws Exception {
 	   String uri = "/rest/boletos";
 	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-	      .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+	      .accept(MediaType.APPLICATION_JSON_VALUE))
+		  .andReturn();
 	   
 	   int status = mvcResult.getResponse().getStatus();
 	   assertEquals(200, status);

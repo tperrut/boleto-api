@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -57,6 +58,12 @@ public class BoletoEndPointTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	
+	static class Config{
+		public RestTemplateBuilder restTemplateBuilder() {
+			return new RestTemplateBuilder().basicAuthorization("admin", "123");
+		}
+	}
+	
 	@Before
 	public void contextLoads() {
 		System.out.println("Porta teste: "+port);
@@ -73,6 +80,7 @@ public class BoletoEndPointTest {
 	public void listBoletosTest() {
 		List<Boleto> boletos = Arrays.asList(createBoleto(LocalDate.now(), VALE),createBoleto(LocalDate.now(), ICN));
 		BDDMockito.when(boletoRepository.findAll()).thenReturn(boletos);
+		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos",String.class);
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
 		assertThat(response.getBody().contains(ICN)).isTrue();
@@ -86,6 +94,7 @@ public class BoletoEndPointTest {
 		
 		Optional<Boleto> boletoOpt = Optional.of(boleto);
 		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
+		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/client_no_exist",String.class);
 		assertThat(response.getBody().contains(RESOURCE_NOT_FOUND)).isTrue();
 		assertThat(response.getStatusCodeValue()).isEqualTo(404);
@@ -122,7 +131,7 @@ public class BoletoEndPointTest {
 		Optional<Boleto> boletoOpt= Optional.of(boleto);
 		System.out.println("boletoOpt "+ boletoOpt.isPresent());
 		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
-		
+		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/"+CLIENTE_TESTE,String.class);
 
 		assertThat(response.getBody().contains(CLIENTE_TESTE)).isTrue();
