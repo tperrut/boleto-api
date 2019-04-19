@@ -104,8 +104,9 @@ public class BoletoApiApplicationTests {
 		Boleto boleto = createBoleto(LocalDate.now());
 		assertThat(boleto.isCalculable()).isFalse();
 		
-		boleto.setStatus(EnumStatus.PAID);
-		assertThat(boleto.isCalculable()).isFalse();
+		
+		boleto.setDataVencimento(LocalDate.now().minusDays(10));
+		assertThat(boleto.isCalculable()).isTrue();
 		
 		boleto.setStatus(EnumStatus.PAID);
 		assertThat(boleto.isCalculable()).isFalse();
