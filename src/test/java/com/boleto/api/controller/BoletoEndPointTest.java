@@ -145,8 +145,32 @@ public class BoletoEndPointTest {
 	public void pagarBoletoEmDiaTest() {
 	}
 	
-	//@Test
+	@Test
 	public void pagarBoletoEmAtrasoTest() {
+		 String uri = "/rest/boletos/1/pagamento";
+		   
+		   Boleto boleto = createBoleto(LocalDate.now().minusDays(5), CLIENTE_TESTE);
+		   BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
+		   
+		   Optional<Boleto> boletoOpt = Optional.of(boleto);
+		   BDDMockito.when(boletoRepository.findById(1L)).thenReturn(boletoOpt);
+		   
+		   DataDto dto = new DataDto(LocalDate.now());
+		   
+		   HttpHeaders headers = new HttpHeaders();
+		   headers.setContentType(MediaType.APPLICATION_JSON);
+
+		   Map<String, String> param = new HashMap<String, String>();
+		   param.put("id","1");
+		   
+		   HttpEntity<DataDto> requestEntity = new HttpEntity<DataDto>(dto, headers); 
+		   
+		   restTemplate = restTemplate.withBasicAuth("admin", "123");
+		   ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.PUT, requestEntity,String.class,param);
+			
+		  
+		   int status = response.getStatusCodeValue();
+		   assertEquals(204, status);
 	}
 	
 	//@Test
