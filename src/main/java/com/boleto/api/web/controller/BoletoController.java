@@ -187,9 +187,11 @@ public class BoletoController {
 		if(!boletoOptional.get().isPending()) {
 			throw new BusinessException(ConstanteUtil.ERRO_NOT_PENDING);
 		}	
-		Boleto bol = null;
+		
+		Boleto bol = new Boleto();
 		
 		if(boletoOptional.get().isCalculable() ) {
+			//TODO refactor or no?
 			bol = service.calcularMulta(boletoOptional.get());
 		}
 		

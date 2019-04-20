@@ -2,8 +2,7 @@
 ![](https://www.diamondbybold.com/wp-content/uploads/2016/09/rest-api-1-300x225.png)
 
 # Boleto - API  
-## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api) [![Coverage Status](https://coveralls.io/repos/github/tperrut/boleto-api/badge.svg?branch=master)](https://coveralls.io/github/tperrut/boleto-api?branch=master)
-
+## [![Build Status](https://travis-ci.org/tperrut/boleto-api.svg?branch=master)](https://travis-ci.org/tperrut/boleto-api)[![Coverage Status](https://coveralls.io/repos/github/tperrut/boleto-api/badge.svg?branch=feature%2Fadd-coverage)](https://coveralls.io/github/tperrut/boleto-api?branch=feature%2Fadd-coverage)
 This project aims to create a **API Rest** for bankroll generation, using technology [Java 8](http://java.com). It was developed using [Spring Boot](http://projects.spring.io/spring-boot/), [Travis.ci](https://travis-ci.org) for build automation, [Swagger](http://swagger.com) for documentation, and finally Automatic Deploy on [Heroku](https://dashboard.heroku.com).
 
 >The system has the following endpoint
