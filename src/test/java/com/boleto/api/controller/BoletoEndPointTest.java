@@ -39,6 +39,7 @@ import com.boleto.api.dao.BoletoRepository;
 import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
+import com.boleto.api.util.ConstanteUtil;
 import com.boleto.api.web.controller.BoletoController;
 import com.boleto.api.web.exception.ResourceNotFoundException;
 
@@ -85,6 +86,15 @@ public class BoletoEndPointTest {
 		boleto.setStatus(EnumStatus.PENDING);
 		boleto.setId(1L);
 		return boleto;
+	}
+	
+	@Test
+	public void homeTest() {
+		restTemplate = restTemplate.withBasicAuth("user", "123");
+		ResponseEntity<String> response = restTemplate.getForEntity("/",String.class);
+		assertThat(response.getStatusCodeValue()).isEqualTo(200);
+		assertThat(response.getBody().contains(ConstanteUtil.WELCOME)).isTrue();
+		assertThat(response.getBody().contains(ConstanteUtil.SWAGGER)).isTrue();
 	}
 	
 	@Test
