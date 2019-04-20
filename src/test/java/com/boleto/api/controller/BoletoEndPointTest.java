@@ -1,11 +1,15 @@
 package com.boleto.api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -21,10 +25,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.boleto.api.dao.BoletoRepository;
+import com.boleto.api.dto.DataDto;
 import com.boleto.api.model.Boleto;
 import com.boleto.api.model.EnumStatus;
 import com.boleto.api.web.controller.BoletoController;
@@ -40,7 +52,7 @@ public class BoletoEndPointTest {
 
 	private static final String VALE = "VALE";
 
-	public static final String CLIENTE_TESTE ="CLIENTE_TESTE";  
+	public static final String CLIENTE_TESTE ="CLIENTE_TESTE";
 	
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -98,6 +110,35 @@ public class BoletoEndPointTest {
 		assertThat(response.getBody().contains(RESOURCE_NOT_FOUND)).isTrue();
 		assertThat(response.getStatusCodeValue()).isEqualTo(404);
 
+	}
+	
+
+	@Test
+	public void paymentBoleto() throws Exception {
+	   String uri = "/rest/boletos/1/pagamento";
+	   
+	   Boleto boleto = createBoleto(LocalDate.now(), CLIENTE_TESTE);
+	   BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
+	   
+	   Optional<Boleto> boletoOpt = Optional.of(boleto);
+	   BDDMockito.when(boletoRepository.findById(1L)).thenReturn(boletoOpt);
+	   
+	   DataDto dto = new DataDto(LocalDate.now());
+	   
+	   HttpHeaders headers = new HttpHeaders();
+	   headers.setContentType(MediaType.APPLICATION_JSON);
+
+	   Map<String, String> param = new HashMap<String, String>();
+	   param.put("id","1");
+	   
+	   HttpEntity<DataDto> requestEntity = new HttpEntity<DataDto>(dto, headers); 
+	   
+	   restTemplate = restTemplate.withBasicAuth("admin", "123");
+	   ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.PUT, requestEntity,String.class,param);
+		
+	  
+	   int status = response.getStatusCodeValue();
+	   assertEquals(204, status);
 	}
 	
 	//@Test
