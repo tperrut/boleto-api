@@ -40,9 +40,9 @@ public class BoletoControllerTest extends AbstractTest {
 	@Test
 	public void createBoleto() throws Exception {
 	   String uri = "/rest/boletos";
-	   BoletoDto dto = new BoletoDto(ConstanteUtil.BOLETO_TESTE,LocalDate.now(), new BigDecimal(1000));
+	   BoletoDto dto = new BoletoDto(ConstanteUtil.BOLETO_TESTE,LocalDate.now().minusDays(21), new BigDecimal(1000));
 	   
-	   String inputJson = super.mapToJson(dto);
+	   String inputJson = JsonConverter.mapToJson(dto);
 	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
 	      .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 	   
@@ -51,12 +51,12 @@ public class BoletoControllerTest extends AbstractTest {
 	 
 	}
 	
+	
 	@Test
 	public void findBoletoByCliente() throws Exception {
 	   String uri = "/rest/boletos/cliente/"+ConstanteUtil.BOLETO_TESTE;
 	   
-	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-	      .contentType(MediaType.APPLICATION_JSON_VALUE).content("")).andReturn();
+	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
 	   
 	   int status = mvcResult.getResponse().getStatus();
 	   assertEquals(200, status);
