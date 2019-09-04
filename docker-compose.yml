@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  boleto-api-app:
+    image: boleto-api-image
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container/${DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_PORT=3306
+      - DATABASE_HOST=mysql-container
+    depends_on:
+      - mysql-container
+    ports:
+      - 8080:8080
+    command: mvn clean package spring-boot:run
+
+  mysql-container:
+    container_name: mysql-container
+    image: mysql:5.6
+    command: mysqld
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - DATABASE_PORT=3306
+    expose:
+      - 3306
+    volumes:
+      - ~/data/mysql/bolet-api:/var/lib/mysql
