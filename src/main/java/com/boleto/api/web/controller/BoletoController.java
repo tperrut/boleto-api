@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +171,7 @@ public class BoletoController {
 	 *   --Pagar um boleto---
 	 *  Esse método da API deve alterar o status do boleto para PAID.
 	 * 
-	 * @param paynent_date 
+	 * @param dataPagamento
 	 * {@code Request:	{ "payment_date" : "2018-06-30" }	 }		
 	 * 
 	 * @param id
@@ -214,7 +213,7 @@ public class BoletoController {
 	 * NÂO pode ter os seguintes Status: PAID e CANCELED 
 	 * deve ser apenas status PENDING
 	 * 
-	 * @param Boleto resposta
+	 * @param id resposta
 	 * @return Boleto
 	 */
 	@DeleteMapping("/boletos/{id}")
