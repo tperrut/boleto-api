@@ -20,7 +20,7 @@ public interface BoletoService {
 	
 	Boleto calcularMulta(Boleto Boleto);
 
-	Optional<Boleto> buscarPorCliente(String name);
+	Optional<List<Boleto>> buscarPorCliente(String name);
 
 	List<Boleto> findAll();
 	
