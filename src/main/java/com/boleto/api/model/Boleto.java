@@ -86,8 +86,8 @@ public class Boleto extends AbstractEntity{
 	 * Não pode ter os seguintes Status: PAID e CANCELED |
 	 * Deve estar atrasado
 	 * 
-	 * @param Boleto resposta
-	 * @return Boleto
+	 *
+	 * @return boolean
 	 */
 	public boolean isCalculable() {
 		return this.isAtrasado()  & isPending()  ;
@@ -95,7 +95,7 @@ public class Boleto extends AbstractEntity{
 	
 	
 	@JsonIgnore
-	public Boolean isAtrasado() {
+	public boolean isAtrasado() {
 		return LocalDate.now().isAfter(this.getDataVencimento());
 	}
 	
