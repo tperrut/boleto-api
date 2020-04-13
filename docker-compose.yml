@@ -2,8 +2,10 @@ version: '3.7'
 
 services:
 
-  boleto-api-app:
-    image: boleto-api-image
+  boleto-app:
+    container_name: boleto-app
+    volumes:
+      - ./logs/archived:/logs            
     build:
       context: ./
       dockerfile: Dockerfile
@@ -32,4 +34,4 @@ services:
     expose:
       - 3306
     volumes:
-      - ~/data/mysql/bolet-api:/var/lib/mysql
+      - ./data/mysql/bolet-api:/var/lib/mysql
