@@ -4,9 +4,6 @@ FROM openjdk:8-jdk-alpine
 # Add Maintainer Info
 LABEL maintainer="thi.perrut@gmail.com"
 
-# Add a volume pointing to /tmp
-VOLUME /tmp
-
 # The application's jar file
 ARG JAR_FILE=target/boleto-api-1.0.0.jar
 
