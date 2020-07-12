@@ -1,9 +1,5 @@
-ts := `/bin/date "+%F"`
-
-data:
-	@echo ${ts}	
 ps:
-	@echo Iniciando containers na responsa do ${USER} ...
+	@echo Listando containers na responsa do ${USER} ...
 	docker-compose ps
 	
 start:
