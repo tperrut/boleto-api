@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -87,11 +88,12 @@ public class BoletoEndPointTest {
 	}
 	
 	@Test
-	public void findByClienteNotValidTest() {
+	public void findByClienteNotValid() {
 		Boleto boleto = createBoleto(LocalDate.now(), CLIENTE_TESTE);
 		BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
-		
-		Optional<Boleto> boletoOpt = Optional.of(boleto);
+		List list = new ArrayList();
+		list.add(boleto);
+		Optional<List<Boleto>> boletoOpt = Optional.of(list);
 		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
 		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/client_no_exist",String.class);
@@ -126,9 +128,10 @@ public class BoletoEndPointTest {
 	public void findByClientValidTest() {
 		Boleto boleto = createBoleto(LocalDate.now(), CLIENTE_TESTE);
 		BDDMockito.when(boletoRepository.save(boleto)).thenReturn(boleto);
-		
-		Optional<Boleto> boletoOpt= Optional.of(boleto);
-		System.out.println("boletoOpt "+ boletoOpt.isPresent());
+
+		List list = new ArrayList();
+		list.add(boleto);
+		Optional<List<Boleto>> boletoOpt= Optional.of(list);
 		BDDMockito.when(boletoRepository.findByCliente(CLIENTE_TESTE)).thenReturn(boletoOpt);
 		restTemplate = restTemplate.withBasicAuth("admin", "123");
 		ResponseEntity<String> response = restTemplate.getForEntity("/rest/boletos/cliente/"+CLIENTE_TESTE,String.class);

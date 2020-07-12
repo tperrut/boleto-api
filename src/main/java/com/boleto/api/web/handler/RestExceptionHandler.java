@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.boleto.api.util.ConstanteUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +30,10 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-	
-	@ExceptionHandler(ResourceNotFoundException.class) 
+
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException (ResourceNotFoundException e){
 		ResourceNotFoundDetails ex = ResourceNotFoundDetails.builder().
 		detalhe(e.getMessage()).
@@ -37,6 +42,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		timestamp(new Date()).
 		titulo("Resource Not Found").
 		build();
+
+		LOGGER.info(ex.toString());
+
 		return new ResponseEntity<>(ex,HttpStatus.NOT_FOUND );
 		
 	}
@@ -50,6 +58,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		timestamp(new Date()).
 		titulo(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase()).
 		build();
+
+		e.printStackTrace();
+
+		LOGGER.error(e.toString());
+
 		return new ResponseEntity<>(ex,HttpStatus.UNPROCESSABLE_ENTITY );
 		
 	}
@@ -63,6 +76,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		titulo(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).
 		build();
 		e.getCause().printStackTrace();
+
+		LOGGER.error(ex.toString());
+
 		return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR) ;
     }
 
@@ -98,6 +114,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				build();
 				 
 		ex.printStackTrace();
+
+		LOGGER.info(ex.toString());
+
 		return new ResponseEntity<>(jnr,statusName);
 
 	}
@@ -119,7 +138,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 				field(fieldErro).
 				fieldMessages(fieldMsg).
 				build();
-		ex.printStackTrace();		 
+		ex.printStackTrace();
+
+		LOGGER.error(ex.toString());
+
 		return new ResponseEntity<>(jnr,status);
 		
 

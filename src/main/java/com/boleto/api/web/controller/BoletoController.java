@@ -1,5 +1,6 @@
 package com.boleto.api.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,29 +127,34 @@ public class BoletoController {
 	@GetMapping(path="/boletos/cliente/{cliente}",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseApi<BoletoDetalheDto>> findByName(@PathVariable String cliente){ 
 		LOGGER.info(ConstanteUtil.FIND_BY_NAME + cliente );
-		Optional<Boleto> boleto = null;
-		Boleto resposta = null;
+		Optional<List<Boleto>> boletos = null;
+		List<Boleto> resposta = new ArrayList<Boleto>();
 		verificarSeClienteExiste(cliente);
 		try {
-			boleto = service.buscarPorCliente(cliente);
-			System.out.println(service.buscarPorCliente(cliente));
-			resposta = boleto.get();
-			if(resposta.isCalculable() )
-				resposta = service.calcularMulta(boleto.get());
+			boletos = service.buscarPorCliente(cliente);
+			service.buscarPorCliente(cliente);
+			resposta = boletos.get().stream().map(i -> {
+				if(i.isCalculable())
+					return  service.calcularMulta(i);
+				else
+					return i;
+			}).collect(Collectors.toList());
 				
 		} catch(Exception ex) {
 			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR + ex.getMessage() + ConstanteUtil.FIND_BY_NAME + cliente);
-			throw new InternalServerException(ConstanteUtil.ERRO_BOLETO_POR_NOME,ex);
+			throw new InternalServerException(String.format(ConstanteUtil.ERRO_BOLETO_POR_NOME,cliente),ex);
 		}
-		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();
-		boletoResponse.setData(Arrays.asList(resposta.converteBoletoToDetalheDto()));
+		ResponseApi<BoletoDetalheDto> boletoResponse = new ResponseApi<BoletoDetalheDto>();;
+		boletoResponse.setData(resposta.stream().map(i -> i.converteBoletoToDetalheDto()).collect(Collectors.toList()));
 		return new ResponseEntity<>(boletoResponse , HttpStatus.OK) ;
 	}
 
-	
+	/**
+	 * The vertical distances of point.
+	 */
 
 	@PostMapping(path="/boletos",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){ 
+	public ResponseEntity<Object> criarBoleto(@RequestBody @Valid BoletoDto dto){
 		LOGGER.info(ConstanteUtil.CRIAR_BOLETO+ dto.getCliente() );
 		Boleto ticket = null;
 		ResponseApi<BoletoDto> boletoResponse = new ResponseApi<BoletoDto>();
@@ -160,7 +165,7 @@ public class BoletoController {
 			ticket = service.salvar(ticket);
 		} catch(Exception ex){
 			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR + ex.getMessage() + ConstanteUtil.CRIAR_BOLETO+ dto.getCliente());
-			throw new InternalServerException(ConstanteUtil.ERRO_CRIAR_BOLETO,ex);
+			throw new InternalServerException(String.format(ConstanteUtil.ERRO_CRIAR_BOLETO),ex);
 		}
 		
 		boletoResponse.setData(Arrays.asList(ticket.converteBoletoToDto()));
@@ -172,7 +177,7 @@ public class BoletoController {
 	 *   --Pagar um boleto---
 	 *  Esse método da API deve alterar o status do boleto para PAID.
 	 * 
-	 * @param paynent_date 
+	 * @param dataPagamento
 	 * {@code Request:	{ "payment_date" : "2018-06-30" }	 }		
 	 * 
 	 * @param id
@@ -185,9 +190,10 @@ public class BoletoController {
 		
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 		if(!boletoOptional.get().isPending()) {
-			throw new BusinessException(ConstanteUtil.ERRO_NOT_PENDING);
-		}	
-		Boleto bol = null;
+			throw new BusinessException(String.format(ConstanteUtil.ERRO_NOT_PENDING, id));
+		}
+
+		Boleto bol = boletoOptional.get();
 		
 		if(boletoOptional.get().isCalculable() ) {
 			bol = service.calcularMulta(boletoOptional.get());
@@ -200,8 +206,8 @@ public class BoletoController {
 		
 		service.salvar(boletoOptional.get());
 		} catch (Exception e) {
-			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR + e.getMessage() + ConstanteUtil.PAGAR_BOLETO+ id);
-			throw new InternalServerException(ConstanteUtil.ERRO_PAGAR,e);
+			LOGGER.error(String.format(ConstanteUtil.INTERNAL_SERVER_ERROR, e.toString()));
+			throw new InternalServerException(String.format(ConstanteUtil.ERRO_PAGAR, id),e);
 		}
 		ResponseApi<Boleto> boletoResponse = new ResponseApi<Boleto>();
 		boletoResponse.setData(Arrays.asList(boletoOptional.get()));
@@ -214,7 +220,7 @@ public class BoletoController {
 	 * NÂO pode ter os seguintes Status: PAID e CANCELED 
 	 * deve ser apenas status PENDING
 	 * 
-	 * @param Boleto resposta
+	 * @param id resposta
 	 * @return Boleto
 	 */
 	@DeleteMapping("/boletos/{id}")
@@ -223,24 +229,26 @@ public class BoletoController {
 		verificarSeBoletoExiste(id);
 			
 		Optional<Boleto> boleto = service.buscarPorId(id);
-		if(!boleto.get().isPending()) 
-			throw new BusinessException(ConstanteUtil.ERRO_NOT_PENDING);
+		if(!boleto.get().isPending())
+			throw new BusinessException(String.format(ConstanteUtil.ERRO_NOT_PENDING, id));
 
 		try {
 			boleto.get().setStatus(EnumStatus.CANCELED);
 			service.salvar(boleto.get());	
 		} catch (Exception e) {
-			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR+ e.getMessage() + ConstanteUtil.CANCELAR_BOLETO+ id  );
-			throw new InternalServerException(ConstanteUtil.ERRO_CANCELAR_BOLETO,e);
+			LOGGER.error(ConstanteUtil.INTERNAL_SERVER_ERROR, e.toString());
+			throw new InternalServerException(String.format(ConstanteUtil.ERRO_CANCELAR_BOLETO,e));
 		}	
 		return ResponseEntity.noContent().build();
 	}
 	
 	public void verificarSeClienteExiste(String cliente) {
-		Optional<Boleto> boletoOptional = service.buscarPorCliente(cliente);
+		Optional<List<Boleto>> boletoOptional = service.buscarPorCliente(cliente);
 
-		if (!boletoOptional.isPresent())
-			throw new ResourceNotFoundException(ConstanteUtil.BOLETO_NOT_FOUND_BY_CLIENTE+ cliente);
+		if (!boletoOptional.isPresent()) {
+			LOGGER.info(ConstanteUtil.BOLETO_NOT_FOUND_BY_CLIENTE.toUpperCase() + cliente);
+			throw new ResourceNotFoundException(ConstanteUtil.BOLETO_NOT_FOUND_BY_CLIENTE + cliente);
+		}
 	}
 
 
@@ -248,8 +256,9 @@ public class BoletoController {
 	public void verificarSeBoletoExiste(Long id) {
 		Optional<Boleto> boletoOptional = service.buscarPorId(id);
 
-		if (!boletoOptional.isPresent())
-			throw new ResourceNotFoundException(ConstanteUtil.BOLETO_NOT_FOUND+ id);
+		if (!boletoOptional.isPresent()) {
+			LOGGER.info(ConstanteUtil.BOLETO_NOT_FOUND.toUpperCase() + id);
+			throw new ResourceNotFoundException(ConstanteUtil.BOLETO_NOT_FOUND + id);
+		}
 	}
-	
 }

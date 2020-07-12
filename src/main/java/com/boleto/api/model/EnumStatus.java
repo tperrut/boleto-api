@@ -6,7 +6,7 @@ public enum EnumStatus {
 	
 	private int id;
 
-	private EnumStatus(int id) {
+	EnumStatus(int id) {
 		this.id = id;
 	}
 	

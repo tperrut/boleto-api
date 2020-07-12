@@ -41,7 +41,7 @@ public class BoletoServiceImpl implements BoletoService {
 	}
 
 	@Override	@Transactional(readOnly = true)
-	public Optional<Boleto> buscarPorCliente(String nome) {
+	public Optional<List<Boleto>> buscarPorCliente(String nome) {
 		return dao.findByCliente(nome);
 	}
 	
