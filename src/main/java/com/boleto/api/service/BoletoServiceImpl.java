@@ -62,7 +62,8 @@ public class BoletoServiceImpl implements BoletoService {
 			return boleto;
 
 		Double multa;
-		
+
+		//TODO ache o code smell nesse trecho
 		if(isMenorOuIgualDezDias( boleto.getDataVencimento())){
 			multa = getValorMulta(boleto,ATE_10_DIAS_ATRASO);
 			aplicarMulta(boleto, multa);
