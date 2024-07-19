@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-ar tifact@v2
+        uses: actions/download-artifact@v2
         with:
           name: boleto-api-1.0.0
 
